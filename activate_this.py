@@ -79,7 +79,7 @@ class OrderStatus(Enum): #This would represent the status of an order
     SHIPPED = "Shipped"
     DELIVERED = "Delivered"
     CANCELLED = "Cancelled"
-class Order: #Represents the order in the system.
+class Order: #Represents the order in the system. 
     def __init__(self, order_id, order_date, amount_of_items, total_price, order_status=OrderStatus.PENDING):
         self._order_id = order_id
         self._order_date = order_date
@@ -96,7 +96,7 @@ class Order: #Represents the order in the system.
         self._order_date = order_date #Sets the order date
     def get_amount_of_items(self):
         return self._amount_of_items #Returns the amount of items
-    def set_order_id(self, amount_of_items):
+    def set_amount_of_items(self, amount_of_items):
         self._amount_of_items = amount_of_items #Sets the amount of items
     def get_total_price(self):
         return self._total_price #Returns the total price of the order
