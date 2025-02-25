@@ -159,48 +159,91 @@ class Delivery: #Represents the delivery in the system.
         print(f"Shipping Address: {self._shipping_address}")
         print(f"Delivery Weight: {self._delivery_weight}")
         print(f"Delivery Status: {self._delivery_status.value}")  # Access the value of the Enum
+    
 #Test
-# Creating for the class User
+# Creating for the class for the first User
 user1 = User(
     user_id=202317839,
     user_firstname="Sarah",
-    user_lastname="Johnsom",
-    contact_information="sarah.johnsom@example.com",
+    user_lastname="Johnson",
+    contact_information="sarah.johnson@example.com",
     recent_order_date=datetime(2025, 1, 11))
-# Creating for the class Driver
+# Creating for the class for the first User
+user2 = User(
+    user_id=202089265,
+    user_firstname="Maryam",
+    user_lastname="Jassim",
+    contact_information="maryam.jassim@example.com",
+    recent_order_date=datetime(2025, 2, 1))
+
+# Creating for the class for the first Driver
 driver1 = Driver(
     driver_id=201719609,
     driver_firstname="Mohamed",
     driver_lastname="Salem",
     vehicle_type="Car, mini cooper",
     nationality="Egyptian")
-# Creating for the class Order
+driver2 = Driver(
+    driver_id=201718962,
+    driver_firstname="Ahmed",
+    driver_lastname="Ali",
+    vehicle_type="Van",
+    nationality="Indian") 
+
+# Creating for the class Order for the first Order
 order1 = Order(
     order_id=1092,
     order_date=datetime.now(),
     amount_of_items=20,
     total_price=378.00,
     order_status=OrderStatus.PROCESSING)
-# Create a Delivery
+# Creating for the class Order for the second Order
+order2 = Order(
+    order_id=1022,
+    order_date=datetime.now(),
+    amount_of_items=31,
+    total_price=500.00,
+    order_status=OrderStatus.SHIPPED)  
+    
+# Create a the call for the first Delivery
 delivery1 = Delivery(
     delivery_id=2001,
     estimated_delivery_date=datetime(2025, 2, 25, 13, 0, 0),  #Feb. 25th,2025 at 1 PM
     shipping_address="45 Knowledge Avenue, UAE, Dubai",
     delivery_weight=7.25,
     delivery_status=DeliveryStatus.SHIPPED)
+# Create a the call for the second Delivery
+delivery2 = Delivery(
+    delivery_id=5628,
+    estimated_delivery_date=datetime(2025, 4, 4, 15, 0, 0),  #April. 25th,2025 at 3 PM
+    shipping_address="45 Knowledge Avenue, UAE, Dubai",
+    delivery_weight=7.25,
+    delivery_status=DeliveryStatus.SHIPPED)
+
 # Display the User Information
 print("User Information:")
 user1.display_user_info()
+print("-" * 5)
+user2.display_user_info()
 print("-" * 20)
+
 # Display the Driver Information
 print("Driver Information:")
 driver1.display_driver_info()
+print("-" * 5)
+driver2.display_driver_info()
 print("-" * 20)
+
 # Display the Order Information
 print("Order Information:")
 order1.display_order_info()
+print("-" * 5)
+order2.display_order_info()
 print("-" * 20)
+
 # Display the Delivery Information
 print("Delivery Information:")
 delivery1.display_delivery_info()
+print("-" * 5)
+delivery2.display_delivery_info()
 
