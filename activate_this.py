@@ -73,7 +73,6 @@ class Driver:# Represents the driver in the system.
         print(f"Last Name: {self._driver_lastname}")
         print(f"Vehicle Type: {self._vehicle_type}")
         print(f"Nationality: {self._nationality}")
-
 class OrderStatus(Enum): #This would represent the status of an order
     PENDING = "Pending"
     PROCESSING = "Processing"
@@ -111,8 +110,7 @@ class Order: #Represents the order in the system.
         pass  # Add an item to the order
     def calculate_total_price(self): #Calculates total price of the order
         pass  # Calculates the total price
-    def display_order_info(self):
-        """Displays the order's information."""
+    def display_order_info(self): #Displays the order's information
         print(f"Order ID: {self._order_id}")
         print(f"Order Date: {self._order_date}")
         print(f"Amount of Items: {self._amount_of_items}")
