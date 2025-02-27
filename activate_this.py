@@ -73,6 +73,7 @@ class Driver:# Represents the driver in the system.
         print(f"Last Name: {self._driver_lastname}")
         print(f"Vehicle Type: {self._vehicle_type}")
         print(f"Nationality: {self._nationality}")
+
 class OrderStatus(Enum): #This would represent the status of an order
     PENDING = "Pending"
     PROCESSING = "Processing"
@@ -81,22 +82,22 @@ class OrderStatus(Enum): #This would represent the status of an order
     CANCELLED = "Cancelled"
 class Order: #Represents the order in the system. 
     def __init__(self, order_id, order_date, amount_of_items, total_price, order_status=OrderStatus.PENDING):
-        self._order_id = order_id
-        self._order_date = order_date
+        self._processed_order_id = processed_order_id
+        self._prossed_order_date = processed_order_date
         self._amount_of_items = amount_of_items
         self._total_price = total_price
-        self._order_status = order_status
-    def get_order_id(self):
-        return self._order_id #Returns the order ID.
-    def set_order_id(self, order_id):
-        self._order_id = order_id #Sets the order ID
-    def get_order_date(self):
-        return self._order_date #Returns the order date
-    def set_order_date(self, order_date):
-        self._order_date = order_date #Sets the order date
-    def get_amount_of_items(self):
+        self._processed_order_status = order_status
+    def get_order_id(self): 
+        return self._ processed_order_id #Returns the order ID.
+    def set_ processed_order_id(self, order_id): 
+        self._ processed_order_id = processed_order_id #Sets the order ID
+    def get_ processed_order_date(self):
+        return self._ processed_order_date #Returns the order date
+    def set_ processed_order_date(self, order_date):
+        self._ processed_order_date = order_date #Sets the order date
+    def get_amount_of_items(self): 
         return self._amount_of_items #Returns the amount of items
-    def set_amount_of_items(self, amount_of_items):
+    def set_ amount_of_items(self, amount_of_items): 
         self._amount_of_items = amount_of_items #Sets the amount of items
     def get_total_price(self):
         return self._total_price #Returns the total price of the order
@@ -110,10 +111,11 @@ class Order: #Represents the order in the system.
         pass  # Add an item to the order
     def calculate_total_price(self): #Calculates total price of the order
         pass  # Calculates the total price
-    def display_order_info(self): #Displays the order's information
-        print(f"Order ID: {self._order_id}")
-        print(f"Order Date: {self._order_date}")
-        print(f"Amount of Items: {self._amount_of_items}")
+    def display_order_info(self):
+        """Displays the order's information."""
+        print(f"Order ID: {self._ processed_order_id}")
+        print(f"Order Date: {self._ processed_order_date}")
+        print(f"Amount of Items: {self._ amount_of_items}")
         print(f"Total Price:{self._total_price}")
         print(f"Order Status: {OrderStatus}")
 
