@@ -80,24 +80,24 @@ class OrderStatus(Enum): #This would represent the status of an order
     SHIPPED = "Shipped"
     DELIVERED = "Delivered"
     CANCELLED = "Cancelled"
-class Order: #Represents the order in the system. 
-    def __init__(self, order_id, order_date, amount_of_items, total_price, order_status=OrderStatus.PENDING):
+class Processed_Order: #Represents the order in the system. 
+    def __init__(self, processed_order_id, processed_order_date, amount_of_items, total_price, order_status=OrderStatus.PENDING):
         self._processed_order_id = processed_order_id
         self._prossed_order_date = processed_order_date
         self._amount_of_items = amount_of_items
         self._total_price = total_price
         self._processed_order_status = order_status
     def get_order_id(self): 
-        return self._ processed_order_id #Returns the order ID.
-    def set_ processed_order_id(self, order_id): 
-        self._ processed_order_id = processed_order_id #Sets the order ID
-    def get_ processed_order_date(self):
-        return self._ processed_order_date #Returns the order date
-    def set_ processed_order_date(self, order_date):
-        self._ processed_order_date = order_date #Sets the order date
+        return self._processed_order_id #Returns the order ID.
+    def set_processed_order_id(self, processed_order_id): 
+        self._processed_order_id = processed_order_id #Sets the order ID
+    def get_processed_order_date(self):
+        return self._processed_order_date #Returns the order date
+    def set_processed_order_date(self, processed_order_date):
+        self._processed_order_date = order_date #Sets the order date
     def get_amount_of_items(self): 
         return self._amount_of_items #Returns the amount of items
-    def set_ amount_of_items(self, amount_of_items): 
+    def set_amount_of_items(self, amount_of_items): 
         self._amount_of_items = amount_of_items #Sets the amount of items
     def get_total_price(self):
         return self._total_price #Returns the total price of the order
@@ -111,11 +111,11 @@ class Order: #Represents the order in the system.
         pass  # Add an item to the order
     def calculate_total_price(self): #Calculates total price of the order
         pass  # Calculates the total price
-    def display_order_info(self):
+    def display_processed_order_info(self):
         """Displays the order's information."""
-        print(f"Order ID: {self._ processed_order_id}")
-        print(f"Order Date: {self._ processed_order_date}")
-        print(f"Amount of Items: {self._ amount_of_items}")
+        print(f"Order ID: {self._processed_order_id}")
+        print(f"Order Date: {self._prossed_order_date}")
+        print(f"Amount of Items: {self._amount_of_items}")
         print(f"Total Price:{self._total_price}")
         print(f"Order Status: {OrderStatus}")
 
@@ -193,16 +193,16 @@ driver2 = Driver(
     nationality="Indian") 
 
 # Creating for the class Order for the first Order
-order1 = Order(
-    order_id=1092,
-    order_date=datetime.now(),
+processed_order1 = Processed_Order(
+    processed_order_id=1092,
+    processed_order_date=datetime.now(),
     amount_of_items=20,
     total_price=378.00,
     order_status=OrderStatus.PROCESSING)
 # Creating for the class Order for the second Order
-order2 = Order(
-    order_id=1022,
-    order_date=datetime.now(),
+processed_order2 = Processed_Order(
+    processed_order_id=1022,
+    processed_order_date=datetime.now(),
     amount_of_items=31,
     total_price=500.00,
     order_status=OrderStatus.SHIPPED)  
@@ -218,9 +218,9 @@ delivery1 = Delivery(
 delivery2 = Delivery(
     delivery_id=5628,
     estimated_delivery_date=datetime(2025, 4, 4, 15, 0, 0),  #April. 25th,2025 at 3 PM
-    shipping_address="45 Knowledge Avenue, UAE, Dubai",
-    delivery_weight=7.25,
-    delivery_status=DeliveryStatus.SHIPPED)
+    shipping_address="25c street Mirdif, UAE, Dubai",
+    delivery_weight=8.50,
+    delivery_status=DeliveryStatus.FAILED)
 
 # Display the User Information
 print("User Information:")
@@ -238,9 +238,9 @@ print("-" * 20)
 
 # Display the Order Information
 print("Order Information:")
-order1.display_order_info()
+processed_order1.display_processed_order_info()
 print("-" * 5)
-order2.display_order_info()
+processed_order2.display_processed_order_info()
 print("-" * 20)
 
 # Display the Delivery Information
