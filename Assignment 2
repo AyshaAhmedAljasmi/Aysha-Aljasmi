@@ -1,1 +1,294 @@
+from datetime import date
+from enum import Enum
 
+class LoyaltyStatus(Enum):
+    BRONZE = "Bronze"
+    SILVER = "Silver"
+    GOLD = "Gold"
+    PLATINUM = "Platinum"
+class Guest:  # Represents a guest in the hotel system.
+    def __init__(self, guest_id, guest_name, guest_dob, contact_information, loyalty_status, nationality):
+        self._guest_id = guest_id
+        self._guest_name = guest_name
+        self._guest_dob = guest_dob
+        self._contact_information = contact_information
+        self._loyalty_status = loyalty_status
+        self._nationality = nationality
+# Getters and setters for the Guest attributes
+    def get_guest_id(self):
+        return self._guest_id #Returns the guest's ID
+    def set_guest_id(self, guest_id):
+        self._guest_id = guest_id #Sets the guest's ID
+    def get_guest_name(self):
+        return self._guest_name #Returns the guest's name
+    def set_guest_name(self, guest_name): #Sets the guest's name
+        self._guest_name = guest_name
+    def get_guest_dob(self):
+        return self._guest_dob #Returns the guest's date of birth
+    def set_guest_dob(self, guest_dob):
+        self._guest_dob = guest_dob #Sets the guest's date of birth
+    def get_contact_information(self):
+        return self._contact_information #Returns the guest's contact information
+    def set_contact_information(self, contact_information): #Sets the guest's contact information
+        self._contact_information = contact_information 
+    def get_loyalty_status(self):
+        return self._loyalty_status #Returns the guest's loyalty status
+    def set_loyalty_status(self, loyalty_status): #Sets the guest's loyalty status
+        self._loyalty_status = loyalty_status 
+    def get_nationality(self):
+        return self._nationality #Returns the guest's nationality
+    def set_nationality(self, nationality): #Sets the guest's nationality
+        self._nationality = nationality
+    def display_guest_info(self): #Displays the guest's information
+        print(f"Guest ID: {self._guest_id}")
+        print(f"Guest Name: {self._guest_name}")
+        print(f"Guest DOB: {self._guest_dob}")
+        print(f"Contact Information: {self._contact_information}")
+        print(f"Loyalty Status: {self._loyalty_status.value}")  #This would access the ENUM value
+        print(f"Nationality: {self._nationality}")
+    def request_special_service(self, service_details): #Allows the guest to request a special service.
+        print(f"Special service requested by {self._guest_name}: {service_details}")
+    def provide_feedback(self, feedback_text, rating): #Allows the guest to provide feedback.
+        print(f"Feedback from {self._guest_name} (Rating: {rating}): {feedback_text}")
+        
+class Booking:  # Represents a booking in the hotel system.
+    def __init__(self, booking_id, check_in_date, check_out_date, total_price, number_of_guests):
+        self._booking_id = booking_id
+        self._check_in_date = check_in_date
+        self._check_out_date = check_out_date
+        self._total_price = total_price
+        self._number_of_guests = number_of_guests
+# Getters and setters for the Booking attributes
+    def get_booking_id(self):
+        return self._booking_id #Returns the booking's ID
+    def set_booking_id(self, booking_id): #Sets the booking's ID
+        self._booking_id = booking_id
+    def get_check_in_date(self):
+        return self._check_in_date #Returns the check-in date
+    def set_check_in_date(self, check_in_date): #Sets the check-in date
+        self._check_in_date = check_in_date
+    def get_check_out_date(self):
+        return self._check_out_date #Returns the check-out date
+    def set_check_out_date(self, check_out_date): #Sets the check-out date
+        self._check_out_date = check_out_date 
+    def get_total_price(self):
+        return self._total_price #Returns the total price
+    def set_total_price(self, total_price): #Sets the total price
+        self._total_price = total_price
+    def get_number_of_guests(self): 
+        return self._number_of_guests #Returns the number of guests
+    def set_number_of_guests(self, number_of_guests): #Sets the number of guests
+        self._number_of_guests = number_of_guests
+    def display_booking_info(self): #Displays the booking information
+        print(f"Booking ID: {self._booking_id}")
+        print(f"Check-in Date: {self._check_in_date}")
+        print(f"Check-out Date: {self._check_out_date}")
+        print(f"Total Price: {self._total_price}")
+        print(f"Number of Guests: {self._number_of_guests}")
+    def confirm_booking(self): #Confirms the booking
+        print(f"Booking {self._booking_id} confirmed.")
+        
+class PaymentMethod(Enum):
+    CREDIT_CARD = "Credit Card"
+    DEBIT_CARD = "Debit Card"
+    CASH = "Cash"
+    PAYPAL = "PayPal"
+class PaymentAndInvoicing:  # Represents payment and invoicing information.
+    def __init__(self, payment_id, payment_method, amount_paid, invoice_id, invoice_date, night_rate, additional_charges, discounts):
+        self._payment_id = payment_id
+        self._payment_method = payment_method
+        self._amount_paid = amount_paid
+        self._invoice_id = invoice_id
+        self._invoice_date = invoice_date
+        self._night_rate = night_rate
+        self._additional_charges = additional_charges
+        self._discounts = discounts
+# Getters and setters for the PaymentAndInvoicing attributes
+    def get_payment_id(self):
+        return self._payment_id #Returns the payment's ID
+    def set_payment_id(self, payment_id): #Sets the payment's ID
+        self._payment_id = payment_id
+    def get_payment_method(self):
+        return self._payment_method #Returns the payment method
+    def set_payment_method(self, payment_method): #Sets the payment method
+        self._payment_method = payment_method
+    def get_amount_paid(self):
+        return self._amount_paid #Returns the amount paid
+    def set_amount_paid(self, amount_paid): #Sets the amount paid
+        self._amount_paid = amount_paid
+    def get_invoice_id(self):
+        return self._invoice_id #Returns the invoice's ID
+    def set_invoice_id(self, invoice_id): #Sets the invoice's ID
+        self._invoice_id = invoice_id
+    def get_invoice_date(self):
+        return self._invoice_date #Returns the invoice date
+    def set_invoice_date(self, invoice_date): #Sets the invoice date
+        self._invoice_date = invoice_date
+    def get_night_rate(self):
+        return self._night_rate #Returns the night rate
+    def set_night_rate(self, night_rate): #Sets the night rate
+        self._night_rate = night_rate
+    def get_additional_charges(self):
+        return self._additional_charges #Returns the additional charges
+    def set_additional_charges(self, additional_charges): #Sets the additional charges
+        self._additional_charges = additional_charges
+    def get_discounts(self):
+        return self._discounts #Returns the discounts
+    def set_discounts(self, discounts): #Sets the discounts
+        self._discounts = discounts
+    def display_payment_and_invoicing_info(self): #Displays the payment and invoicing information
+        print(f"Payment ID: {self._payment_id}")
+        print(f"Payment Method: {self._payment_method.value}")  # This would access the ENUM value
+        print(f"Amount Paid: {self._amount_paid}")
+        print(f"Invoice ID: {self._invoice_id}")
+        print(f"Invoice Date: {self._invoice_date}")
+        print(f"Night Rate: {self._night_rate}")
+        print(f"Additional Charges: {self._additional_charges}")
+        print(f"Discounts: {self._discounts}")
+    
+class AvailabilityStatus(Enum):
+    AVAILABLE = "Available"
+    OCCUPIED = "Occupied"
+    UNDER_MAINTENANCE = "Under Maintenance"
+class Room:
+    def __init__(self, room_number, amenities, price_per_night, availability_status, capacity):
+        self._room_number = room_number
+        self._amenities = amenities
+        self._price_per_night = price_per_night
+        self._availability_status = availability_status
+        self._capacity = capacity
+# Getters and setters for the Room attributes    
+    def get_room_number(self):
+        return self._room_number #Returns the room number
+    def set_room_number(self, room_number): #Sets the room number
+        self._room_number = room_number
+    def get_amenities(self):
+        return self._amenities #Returns the room amenities
+    def set_amenities(self, amenities): #Sets the room amenities
+        self._amenities = amenities
+    def get_price_per_night(self):
+        return self._price_per_night #Returns the price per night
+    def set_price_per_night(self, price_per_night): #Sets the price per night
+        self._price_per_night = price_per_night
+    def get_availability_status(self):
+        return self._availability_status #Returns the availability status
+    def set_availability_status(self, availability_status): #Sets the availability status
+        self._availability_status = availability_status
+    def get_capacity(self):
+        return self._capacity #Returns the room capacity
+    def set_capacity(self, capacity): #Sets the room capacity
+        self._capacity = capacity
+    def display_room_info(self): #Displays the room information
+        print(f"Room Number: {self._room_number}")
+        print(f"Amenities: {self._amenities}")
+        print(f"Price per Night: {self._price_per_night}")
+        print(f"Availability Status: {self._availability_status.value}")  # This would access the ENUM value
+        print(f"Capacity: {self._capacity}")
+    def report_issue(self, issue_description): #Reports an issue with the room
+        print(f"Issue reported for Room {self._room_number}: {issue_description}")
+
+class RequestType(Enum):
+    ROOM_SERVICE = "Room Service"
+    MAINTENANCE = "Maintenance"
+    TOWEL_REQUEST = "Towel Request"
+    EXTRA_PILLOW = "Extra Pillow"
+class RequestStatus(Enum):
+    PENDING = "Pending"
+    IN_PROGRESS = "In Progress"
+    COMPLETED = "Completed"
+    CANCELLED = "Cancelled"
+class Requests:
+    def __init__(self, request_id, request_type, request_details, request_date, request_status):
+        self._request_id = request_id
+        self._request_type = request_type
+        self._request_details = request_details
+        self._request_date = request_date
+        self._request_status = request_status
+# Getters and setters for the Request attributes 
+    def get_request_id(self):
+        return self._request_id #Returns the request ID
+    def set_request_id(self, request_id): #Sets the request ID
+        self._request_id = request_id
+    def get_request_type(self):
+        return self._request_type #Returns the request type
+    def set_request_type(self, request_type): #Sets the request type
+        self._request_type = request_type
+    def get_request_details(self):
+        return self._request_details #Returns the request details
+    def set_request_details(self, request_details): #Sets the request details
+        self._request_details = request_details
+    def get_request_date(self):
+        return self._request_date #Returns the request date
+    def set_request_date(self, request_date): #Sets the request date
+        self._request_date = request_date
+    def get_request_status(self):
+        return self._request_status #Returns the request status
+    def set_request_status(self, request_status): #Sets the request status
+        self._request_status = request_status
+    def display_requests_info(self): #Displays request information
+        print(f"Request ID: {self._request_id}")
+        print(f"Request Type: {self._request_type.value}")  # This would access the ENUM value
+        print(f"Request Details: {self._request_details}")
+        print(f"Request Date: {self._request_date}")
+        print(f"Request Status: {self._request_status.value}")  # This would access the ENUM value
+    def add_request_details(self, additional_details): #This would add additional details to the request
+        self.set_request_details(self.get_request_details() + " " + additional_details)
+        print(f"Additional details added to Request {self._request_id}")
+        
+class LoyaltyAwards:
+    def __init__(self, program_id, points_balance, available_rewards, points_expiration=None):
+        self._program_id = program_id
+        self._points_balance = points_balance
+        self._available_rewards = available_rewards
+        self._points_expiration = points_expiration
+# Getters and setters for the LoyaltyAwards attributes 
+    def get_program_id(self):
+        return self._program_id #Returns the program ID
+    def set_program_id(self, program_id): #Sets the program ID
+        self._program_id = program_id
+    def get_points_balance(self):
+        return self._points_balance #Returns the points balance
+    def set_points_balance(self, points_balance): #Sets the points balance
+        self._points_balance = points_balance
+    def get_available_rewards(self):
+        return self._available_rewards #Returns the available rewards
+    def set_available_rewards(self, available_rewards): #Sets the available rewards
+        self._available_rewards = available_rewards
+    def get_points_expiration(self):
+        return self._points_expiration #Returns the points expiration date
+    def set_points_expiration(self, points_expiration): #Sets the points expiration date
+        self._points_expiration = points_expiration
+    def display_loyalty_awards_info(self): #Displays loyalty awards information
+        print(f"Program ID: {self._program_id}")
+        print(f"Points Balance: {self._points_balance}")
+        print(f"Available Rewards: {self._available_rewards}")
+        print(f"Points Expiration: {self._points_expiration}")
+        
+class FeedbackAndReviews:
+    def __init__(self, review_id, rating, feedback_comment, review_date):
+        self._review_id = review_id
+        self._rating = rating
+        self._feedback_comment = feedback_comment
+        self._review_date = review_date
+# Getters and setters for the FeedbackAndReviews attributes
+    def get_review_id(self):
+        return self._review_id #Returns the review ID
+    def set_review_id(self, review_id): #Sets the review ID
+        self._review_id = review_id
+    def get_rating(self):
+        return self._rating #Returns the rating
+    def set_rating(self, rating): #Sets the rating
+        self._rating = rating
+    def get_feedback_comment(self):
+        return self._feedback_comment #Returns the feedback comment
+    def set_feedback_comment(self, feedback_comment): #Sets the feedback comment
+        self._feedback_comment = feedback_comment
+    def get_review_date(self):
+        return self._review_date #Returns the review date
+    def set_review_date(self, review_date): #Sets the review date
+        self._review_date = review_date
+    def display_feedback_and_reviews_info(self): #Displays feedback and reviews information
+        print(f"Review ID: {self._review_id}")
+        print(f"Rating: {self._rating}")
+        print(f"Feedback Comment: {self._feedback_comment}")
+        print(f"Review Date: {self._review_date}")
