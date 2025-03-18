@@ -142,6 +142,8 @@ class Booking:  # Represents a booking in the hotel system.
         print(f"Number of Guests: {self._number_of_guests}")
     def confirm_booking(self): #Confirms the booking
         print(f"Booking {self._booking_id} confirmed.")
+    def cancel_booking(self): #It cancels the booking
+        print(f"Booking {self._booking_id} has been canceled.")
         
 class PaymentMethod(Enum):
     CREDIT_CARD = "Credit Card"
@@ -338,17 +340,18 @@ class FeedbackAndReviews:
         print(f"Feedback Comment: {self._feedback_comment}")
         print(f"Review Date: {self._review_date}")
 
+#################TEST
 # 1. Guest Account Creation
 #####Example 1: Successful creation (Ahmed)
 guest1 = Guest(21230972, "Ahmed Islam", date(1985, 8, 15), "ahmed.islam@email.com", LoyaltyStatus.GOLD, "UAE")
 print("Guest Account Creation Example 1 (Ahmed):")
 guest1.display_guest_info()
-print("Expected Result: Ahmed's guest account is created successfully with provided details.")
+print("Ahmed's guest account is created successfully with provided details.")
 #####Example 2: Successful creation (Alya)
 guest2 = Guest(21078922, "Alya Ali", date(1998, 3, 23), "alya.ali@gmail.com", LoyaltyStatus.SILVER, "EGY")
 print("\nGuest Account Creation Example 2 (Alya):")
 guest2.display_guest_info()
-print("Expected Result: Alya's guest account is created successfully with provided details.")
+print("Alya's guest account is created successfully with provided details.")
 
 # 2. Searching for Available Rooms
 hotel = Hotel()
@@ -364,14 +367,14 @@ check_in_date_ahmed = date(2023, 3, 20)
 check_out_date_ahmed = date(2023, 3, 25)
 available_rooms_ahmed = [room for room in hotel.get_list_rooms() if room.get_availability_status() == AvailabilityStatus.AVAILABLE]
 print(f"Available rooms for Ahmed: {[room.get_room_number() for room in available_rooms_ahmed]}")
-print("Expected Result: List of available rooms matching Ahmed's criteria is displayed.")
+print("List of available rooms matching Ahmed's criteria is displayed.")
 
 print("\nSearching for Available Rooms (Alya):")
 check_in_date_alya = date(2025, 3, 1)
 check_out_date_alya = date(2025, 3, 15)
 available_rooms_alya = [room for room in hotel.get_list_rooms() if room.get_availability_status() == AvailabilityStatus.AVAILABLE]
 print(f"Available rooms for Alya: {[room.get_room_number() for room in available_rooms_alya]}")
-print("Expected Result: List of available rooms matching Alya's criteria is displayed.")
+print("List of available rooms matching Alya's criteria is displayed.")
 
 # 3. Making a Room Reservation
 booking1 = Booking(98230972, check_in_date_ahmed, check_out_date_ahmed, 150, 3)
@@ -379,14 +382,14 @@ booking1.add_room_to_booking(room1)
 guest1.set_bookings([booking1])
 print("\nMaking a Room Reservation (Ahmed):")
 booking1.display_booking_info()
-print(f"Expected Result: Room {room1.get_room_number()} is reserved for Ahmed, and a booking ID is generated.")
+print(f"Room {room1.get_room_number()} is reserved for Ahmed, and a booking ID is generated.")
 
 booking2 = Booking(21873, check_in_date_alya, check_out_date_alya, 150, 4) # Booking for Alya
 booking2.add_room_to_booking(room3) # Reserve room 3 for Alya
 guest2.set_bookings([booking2])
 print("\nMaking a Room Reservation (Alya):")
 booking2.display_booking_info()
-print(f"Expected Result: Room {room3.get_room_number()} is reserved for Alya, and a booking ID is generated.")
+print(f"Room {room3.get_room_number()} is reserved for Alya, and a booking ID is generated.")
 
 # 4. Booking Confirmation Notification
 print("\nBooking Confirmation Notification (Ahmed):")
@@ -399,23 +402,23 @@ print(f"Notification sent to {guest2.get_guest_name()} with booking details (roo
 invoice1 = Invoice(10237, date.today(), 150, 0, 0)
 print("\nInvoice Generation for a Booking (Ahmed):")
 invoice1.display_invoice_info()
-print("Expected Result: Invoice generated with Ahmed's booking details, payment information, and 'Paid' status.")
+print("Invoice generated with Ahmed's booking details, payment information, and 'Paid' status.")
 
 invoice2 = Invoice(21099, date.today(), 150, 0, 0) # Invoice for Alya
 print("\nInvoice Generation for a Booking (Alya):")
 invoice2.display_invoice_info()
-print("Expected Result: Invoice generated with Alya's booking details, payment information, and 'Paid' status.")
+print("Invoice generated with Alya's booking details, payment information, and 'Paid' status.")
 
 # 6. Processing Different Payment Methods
 payment1 = Payment(1, PaymentMethod.CREDIT_CARD, 2000)
 print("\nProcessing Different Payment Methods Example 1 (Ahmed - Credit Card):")
 payment1.display_payment_info()
-print("Expected Result: Ahmed's payment processed successfully, and booking status updated to 'Paid'.")
+print("Ahmed's payment processed successfully, and booking status updated to 'Paid'.")
 
 payment2 = Payment(2, PaymentMethod.CASH, 2500)
 print("\nProcessing Different Payment Methods Example 2 (Alya - Cash):")
 payment2.display_payment_info()
-print("Expected Result: Alya's payment processed successfully, and booking status updated to 'Paid'.")
+print("Alya's payment processed successfully, and booking status updated to 'Paid'.")
 
 # 7. Displaying Reservation History
 print("\nDisplaying Reservation History (Ahmed):")
@@ -423,3 +426,27 @@ print(f"List of {guest1.get_guest_name()}'s past and current reservations is dis
 
 print("\nDisplaying Reservation History (Alya):")
 print(f"List of {guest2.get_guest_name()}'s past and current reservations is displayed.")
+
+# 8. Testing the cancel_booking method
+print("\nCancellation of a Reservation (Ahmed):")
+booking1.cancel_booking()
+print("Ahmed's booking is canceled.")
+
+print("\nCancellation of a Reservation (Alya):")
+booking2.cancel_booking()
+print("Alya's booking is canceled.")
+
+# 9. Using Exceptions
+try:
+    # Attempt to set an invalid loyalty status for Ahmed
+    guest1.set_loyalty_status("Platinum") #There is an invalid loyalty status for Ahmed
+except ValueError as e:
+    print(f"ValueError caught for Ahmed: {e}")
+    print("ValueError for Ahmed: Invalid loyalty status.")
+
+try:
+    # Attempt to set an invalid date of birth for Alya
+    guest2.set_guest_dob("1995-11-03") #Here the date of birth is incorrect
+except TypeError as e:
+    print(f"TypeError caught for Alya: {e}")
+    print("TypeError for Alya: Date of birth must be a datetime.date object.")
