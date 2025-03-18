@@ -57,7 +57,7 @@ class Guest:  # Represents a guest in the hotel system.
         self._contact_information = contact_information
         self._loyalty_status = loyalty_status
         self._nationality = nationality
-        self._bookings = bookings if bookings is not None else [] #This is the list of bookings
+        self._bookings = [] #This would be the list of books booked
 # Getters and setters for the Guest attributes
     def get_guest_id(self):
         return self._guest_id #Returns the guest's ID
@@ -108,7 +108,7 @@ class Booking:  # Represents a booking in the hotel system.
         self._check_out_date = check_out_date
         self._total_price = total_price
         self._number_of_guests = number_of_guests
-        self._rooms = rooms if rooms is not None else [] #This would be the list of rooms booked
+        self._rooms = [] #This would be the list of rooms booked
 # Getters and setters for the Booking attributes
     def get_booking_id(self):
         return self._booking_id #Returns the booking's ID
@@ -144,6 +144,8 @@ class Booking:  # Represents a booking in the hotel system.
         print(f"Booking {self._booking_id} confirmed.")
     def cancel_booking(self): #It cancels the booking
         print(f"Booking {self._booking_id} has been canceled.")
+    def add_room_to_booking(self, room):
+        self._rooms.append(room)
         
 class PaymentMethod(Enum):
     CREDIT_CARD = "Credit Card"
@@ -344,12 +346,12 @@ class FeedbackAndReviews:
 # 1. Guest Account Creation
 #####Example 1: Successful creation (Ahmed)
 guest1 = Guest(21230972, "Ahmed Islam", date(1985, 8, 15), "ahmed.islam@email.com", LoyaltyStatus.GOLD, "UAE")
-print("Guest Account Creation Example 1 (Ahmed):")
+print("Guest Account Creation (Ahmed):")
 guest1.display_guest_info()
 print("Ahmed's guest account is created successfully with provided details.")
 #####Example 2: Successful creation (Alya)
 guest2 = Guest(21078922, "Alya Ali", date(1998, 3, 23), "alya.ali@gmail.com", LoyaltyStatus.SILVER, "EGY")
-print("\nGuest Account Creation Example 2 (Alya):")
+print("\nGuest Account Creation (Alya):")
 guest2.display_guest_info()
 print("Alya's guest account is created successfully with provided details.")
 
@@ -363,8 +365,8 @@ hotel.add_room(room2)
 hotel.add_room(room3) 
 
 print("\nSearching for Available Rooms (Ahmed):")
-check_in_date_ahmed = date(2023, 3, 20)
-check_out_date_ahmed = date(2023, 3, 25)
+check_in_date_ahmed = date(2025, 2, 20)
+check_out_date_ahmed = date(2025, 2, 25)
 available_rooms_ahmed = [room for room in hotel.get_list_rooms() if room.get_availability_status() == AvailabilityStatus.AVAILABLE]
 print(f"Available rooms for Ahmed: {[room.get_room_number() for room in available_rooms_ahmed]}")
 print("List of available rooms matching Ahmed's criteria is displayed.")
@@ -377,7 +379,7 @@ print(f"Available rooms for Alya: {[room.get_room_number() for room in available
 print("List of available rooms matching Alya's criteria is displayed.")
 
 # 3. Making a Room Reservation
-booking1 = Booking(98230972, check_in_date_ahmed, check_out_date_ahmed, 150, 3)
+booking1 = Booking(98230, check_in_date_ahmed, check_out_date_ahmed, 150, 3)
 booking1.add_room_to_booking(room1)
 guest1.set_bookings([booking1])
 print("\nMaking a Room Reservation (Ahmed):")
@@ -410,12 +412,12 @@ invoice2.display_invoice_info()
 print("Invoice generated with Alya's booking details, payment information, and 'Paid' status.")
 
 # 6. Processing Different Payment Methods
-payment1 = Payment(1, PaymentMethod.CREDIT_CARD, 2000)
+payment1 = Payment(108, PaymentMethod.CREDIT_CARD, 2000)
 print("\nProcessing Different Payment Methods Example 1 (Ahmed - Credit Card):")
 payment1.display_payment_info()
 print("Ahmed's payment processed successfully, and booking status updated to 'Paid'.")
 
-payment2 = Payment(2, PaymentMethod.CASH, 2500)
+payment2 = Payment(237, PaymentMethod.CASH, 2500)
 print("\nProcessing Different Payment Methods Example 2 (Alya - Cash):")
 payment2.display_payment_info()
 print("Alya's payment processed successfully, and booking status updated to 'Paid'.")
