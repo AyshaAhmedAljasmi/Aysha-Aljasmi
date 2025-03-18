@@ -1,8 +1,51 @@
 from datetime import date
 from enum import Enum
 
+class Hotel: #Represents a hotel with rooms, reservation history, and cancellation information.
+    def __init__(self):
+        self._list_rooms = []  #List of Room objects
+        self._number_of_available_rooms = 0  # Integer representing the number of available rooms
+        self._reservation_history = ""  # String to store reservation history
+        self._reservation_cancellation = ""  # String to store cancellation information
+    def add_room(self, room): #Adds a Room object to the hotel's list of rooms
+        self._list_rooms.append(room)
+        if room.get_availability_status() == "Available":
+            self._number_of_available_rooms += 1
+    def remove_room(self, room): #Removes a Room object from the hotel's list of rooms
+        if room in self._list_rooms:
+            self._list_rooms.remove(room)
+            if room.get_availability_status() == "Available":
+                self._number_of_available_rooms -= 1
+    def get_list_rooms(self):
+        return self._list_rooms #Returns the list of Room objects in the hotel
+    def set_list_rooms(self, list_rooms):
+        self._list_rooms = list_rooms #Sets the list of Room objects in the hotel
+    def get_number_of_available_rooms(self):
+        return self._number_of_available_rooms #Returns the number of available rooms in the hotel
+    def set_number_of_available_rooms(self, number_of_available_rooms):
+        self._number_of_available_rooms = number_of_available_rooms #Sets the number of available rooms in the hotel
+    def get_reservation_history(self):
+        return self._reservation_history #Returns the reservation history of the hotel
+    def set_reservation_history(self, reservation_history):
+        self._reservation_history = reservation_history #Sets the reservation history of the hotel
+    def get_reservation_cancellation(self):
+        return self._reservation_cancellation #Returns the reservation cancellation information of the hotel
+    def set_reservation_cancellation(self, reservation_cancellation):
+        self._reservation_cancellation = reservation_cancellation #Sets the reservation cancellation information of the hotel
+    def display_hotel_info(self): #Displays the details for the hotel
+        for room in self._list_rooms: #iterate through each room in the list of rooms.
+            print(f"Room Number: {room.get_room_number()}")
+            print(f"Amenities: {room.get_amenities()}")
+            print(f"Price per Night: {room.get_price_per_night()}")
+            print(f"Availability Status: {room.get_availability_status()}")
+            print(f"Capacity: {room.get_capacity()}")
+    def add_room_to_booking(self, room): #Adds a Room object to the booking's list of rooms
+        self._rooms.append(room)
+    def get_rooms(self): #Returns the list of rooms associated with the booking
+        return self._rooms
+
 class LoyaltyStatus(Enum):
-    BRONZE = "Bronze"
+    BRONZE = "Bronze" 
     SILVER = "Silver"
     GOLD = "Gold"
     PLATINUM = "Platinum"
@@ -14,6 +57,7 @@ class Guest:  # Represents a guest in the hotel system.
         self._contact_information = contact_information
         self._loyalty_status = loyalty_status
         self._nationality = nationality
+        self._bookings = bookings if bookings is not None else [] #This is the list of bookings
 # Getters and setters for the Guest attributes
     def get_guest_id(self):
         return self._guest_id #Returns the guest's ID
@@ -26,6 +70,8 @@ class Guest:  # Represents a guest in the hotel system.
     def get_guest_dob(self):
         return self._guest_dob #Returns the guest's date of birth
     def set_guest_dob(self, guest_dob):
+        if not isinstance(guest_dob, date):
+            raise TypeError("Date of birth must be a datetime.date object.")
         self._guest_dob = guest_dob #Sets the guest's date of birth
     def get_contact_information(self):
         return self._contact_information #Returns the guest's contact information
@@ -39,6 +85,10 @@ class Guest:  # Represents a guest in the hotel system.
         return self._nationality #Returns the guest's nationality
     def set_nationality(self, nationality): #Sets the guest's nationality
         self._nationality = nationality
+    def get_bookings(self):
+        return self._bookings #Returns the list of bookings
+    def set_bookings(self, bookings):
+        self._bookings = bookings #Sets the list of bookings
     def display_guest_info(self): #Displays the guest's information
         print(f"Guest ID: {self._guest_id}")
         print(f"Guest Name: {self._guest_name}")
@@ -58,6 +108,7 @@ class Booking:  # Represents a booking in the hotel system.
         self._check_out_date = check_out_date
         self._total_price = total_price
         self._number_of_guests = number_of_guests
+        self._rooms = rooms if rooms is not None else [] #This would be the list of rooms booked
 # Getters and setters for the Booking attributes
     def get_booking_id(self):
         return self._booking_id #Returns the booking's ID
@@ -79,6 +130,10 @@ class Booking:  # Represents a booking in the hotel system.
         return self._number_of_guests #Returns the number of guests
     def set_number_of_guests(self, number_of_guests): #Sets the number of guests
         self._number_of_guests = number_of_guests
+    def get_rooms(self):
+        return self._rooms #Returns the list of rooms booked
+    def set_rooms(self, rooms):
+        self._rooms = rooms #Sets the list of rooms booked
     def display_booking_info(self): #Displays the booking information
         print(f"Booking ID: {self._booking_id}")
         print(f"Check-in Date: {self._check_in_date}")
@@ -93,53 +148,57 @@ class PaymentMethod(Enum):
     DEBIT_CARD = "Debit Card"
     CASH = "Cash"
     PAYPAL = "PayPal"
-class PaymentAndInvoicing:  # Represents payment and invoicing information.
-    def __init__(self, payment_id, payment_method, amount_paid, invoice_id, invoice_date, night_rate, additional_charges, discounts):
+class Payment: # Represents the payment in the hotel system.
+    def __init__(self, payment_id, payment_method, amount_paid):
         self._payment_id = payment_id
         self._payment_method = payment_method
         self._amount_paid = amount_paid
-        self._invoice_id = invoice_id
-        self._invoice_date = invoice_date
-        self._night_rate = night_rate
-        self._additional_charges = additional_charges
-        self._discounts = discounts
-# Getters and setters for the PaymentAndInvoicing attributes
+# Getters and setters for the Booking attributes
     def get_payment_id(self):
-        return self._payment_id #Returns the payment's ID
-    def set_payment_id(self, payment_id): #Sets the payment's ID
+        return self._payment_id #Returns the payment ID
+    def set_payment_id(self, payment_id): #Sets the number of guests
         self._payment_id = payment_id
     def get_payment_method(self):
         return self._payment_method #Returns the payment method
     def set_payment_method(self, payment_method): #Sets the payment method
         self._payment_method = payment_method
     def get_amount_paid(self):
-        return self._amount_paid #Returns the amount paid
+        return self._amount_paid #Returns the amount paid 
     def set_amount_paid(self, amount_paid): #Sets the amount paid
         self._amount_paid = amount_paid
-    def get_invoice_id(self):
-        return self._invoice_id #Returns the invoice's ID
-    def set_invoice_id(self, invoice_id): #Sets the invoice's ID
+    def display_payment_info(self): #Displays the payment information
+        print(f"Payment ID: {self._payment_id}")
+        print(f"Payment Method: {self._payment_method.value}")
+        print(f"Amount Paid: {self._amount_paid}")
+
+class Invoice: # Represents the invoice in the hotel system.
+    def __init__(self, invoice_id, invoice_date, night_rate, additional_charges, discounts):
         self._invoice_id = invoice_id
-    def get_invoice_date(self):
-        return self._invoice_date #Returns the invoice date
+        self._invoice_date = invoice_date
+        self._night_rate = night_rate
+        self._additional_charges = additional_charges
+        self._discounts = discounts
+    def get_invoice_id(self):
+        return self._invoice_id #Returns the invoice ID
+    def set_invoice_id(self, invoice_id): #Sets the invoice ID
+        self._invoice_id = invoice_id
+    def get_invoice_date(self): #Returns the invoice date
+        return self._invoice_date
     def set_invoice_date(self, invoice_date): #Sets the invoice date
         self._invoice_date = invoice_date
     def get_night_rate(self):
         return self._night_rate #Returns the night rate
-    def set_night_rate(self, night_rate): #Sets the night rate
-        self._night_rate = night_rate
+    def set_night_rate(self, night_rate):
+        self._night_rate = night_rate #Sets the night rate
     def get_additional_charges(self):
-        return self._additional_charges #Returns the additional charges
-    def set_additional_charges(self, additional_charges): #Sets the additional charges
-        self._additional_charges = additional_charges
+        return self._additional_charges #Returns the additional charges 
+    def set_additional_charges(self, additional_charges):
+        self._additional_charges = additional_charges #Sets the additional charges 
     def get_discounts(self):
         return self._discounts #Returns the discounts
-    def set_discounts(self, discounts): #Sets the discounts
-        self._discounts = discounts
-    def display_payment_and_invoicing_info(self): #Displays the payment and invoicing information
-        print(f"Payment ID: {self._payment_id}")
-        print(f"Payment Method: {self._payment_method.value}")  # This would access the ENUM value
-        print(f"Amount Paid: {self._amount_paid}")
+    def set_discounts(self, discounts):
+        self._discounts = discounts #Sets the discounts
+    def display_invoice_info(self): #Displays the invoice information
         print(f"Invoice ID: {self._invoice_id}")
         print(f"Invoice Date: {self._invoice_date}")
         print(f"Night Rate: {self._night_rate}")
@@ -170,6 +229,9 @@ class Room:
         return self._price_per_night #Returns the price per night
     def set_price_per_night(self, price_per_night): #Sets the price per night
         self._price_per_night = price_per_night
+        if price_per_night < 0:
+            raise ValueError("Price per night cannot be negative.") ############The price per night cannot be negative
+        self._price_per_night = price_per_night ###########Sets the price per night
     def get_availability_status(self):
         return self._availability_status #Returns the availability status
     def set_availability_status(self, availability_status): #Sets the availability status
@@ -187,54 +249,37 @@ class Room:
     def report_issue(self, issue_description): #Reports an issue with the room
         print(f"Issue reported for Room {self._room_number}: {issue_description}")
 
-class RequestType(Enum):
-    ROOM_SERVICE = "Room Service"
-    MAINTENANCE = "Maintenance"
-    TOWEL_REQUEST = "Towel Request"
-    EXTRA_PILLOW = "Extra Pillow"
-class RequestStatus(Enum):
-    PENDING = "Pending"
-    IN_PROGRESS = "In Progress"
-    COMPLETED = "Completed"
-    CANCELLED = "Cancelled"
-class Requests:
-    def __init__(self, request_id, request_type, request_details, request_date, request_status):
-        self._request_id = request_id
-        self._request_type = request_type
-        self._request_details = request_details
-        self._request_date = request_date
-        self._request_status = request_status
-# Getters and setters for the Request attributes 
-    def get_request_id(self):
-        return self._request_id #Returns the request ID
-    def set_request_id(self, request_id): #Sets the request ID
-        self._request_id = request_id
-    def get_request_type(self):
-        return self._request_type #Returns the request type
-    def set_request_type(self, request_type): #Sets the request type
-        self._request_type = request_type
-    def get_request_details(self):
-        return self._request_details #Returns the request details
-    def set_request_details(self, request_details): #Sets the request details
-        self._request_details = request_details
-    def get_request_date(self):
-        return self._request_date #Returns the request date
-    def set_request_date(self, request_date): #Sets the request date
-        self._request_date = request_date
-    def get_request_status(self):
-        return self._request_status #Returns the request status
-    def set_request_status(self, request_status): #Sets the request status
-        self._request_status = request_status
-    def display_requests_info(self): #Displays request information
-        print(f"Request ID: {self._request_id}")
-        print(f"Request Type: {self._request_type.value}")  # This would access the ENUM value
-        print(f"Request Details: {self._request_details}")
-        print(f"Request Date: {self._request_date}")
-        print(f"Request Status: {self._request_status.value}")  # This would access the ENUM value
-    def add_request_details(self, additional_details): #This would add additional details to the request
-        self.set_request_details(self.get_request_details() + " " + additional_details)
-        print(f"Additional details added to Request {self._request_id}")
-        
+class PremiumRoom(Room): #The PremiumRoom would inherit from the Class Room
+    def __init__(self, room_number, amenities, price_per_night, availability_status, capacity, view, floor, welcome_gift, square_footage):
+        super().__init__(room_number, amenities, price_per_night, availability_status, capacity, view, floor, welcome_gift, square_footage)
+        self._view = view
+        self._floor = floor
+        self._welcome_gift = welcome_gift
+        self._square_footage = square_footage
+# Getters and setters for the PremiumRoom attributes
+    def get_view(self):
+        return self._view # Returns the view from the premium room
+    def set_view(self, view):
+        self._view = view # Sets the view of the premium room
+    def get_floor(self):
+        return self._floor # Returns the floor number of the premium room
+    def set_floor(self, floor):
+        self._floor = floor # Sets the floor number of the premium room
+    def get_welcome_gift(self):
+        return self._welcome_gift # Returns the welcome gift description
+    def set_welcome_gift(self, welcome_gift):
+        self._welcome_gift = welcome_gift # Sets the welcome gift description
+    def get_square_footage(self):
+        return self._square_footage # Returns the square footage of the premium room
+    def set_square_footage(self, square_footage):
+        self._square_footage = square_footage # Sets the square footage of the premium room
+    def display_premium_room_info(self): #Displays the premium room information
+        super().display_room_info()  #This will call the base class method to display common info
+        print(f"View: {self._view}")
+        print(f"Floor: {self._floor}")
+        print(f"Welcome Gift: {self._welcome_gift}")
+        print(f"Square Footage: {self._square_footage}")
+
 class LoyaltyAwards:
     def __init__(self, program_id, points_balance, available_rewards, points_expiration=None):
         self._program_id = program_id
@@ -292,3 +337,89 @@ class FeedbackAndReviews:
         print(f"Rating: {self._rating}")
         print(f"Feedback Comment: {self._feedback_comment}")
         print(f"Review Date: {self._review_date}")
+
+# 1. Guest Account Creation
+#####Example 1: Successful creation (Ahmed)
+guest1 = Guest(21230972, "Ahmed Islam", date(1985, 8, 15), "ahmed.islam@email.com", LoyaltyStatus.GOLD, "UAE")
+print("Guest Account Creation Example 1 (Ahmed):")
+guest1.display_guest_info()
+print("Expected Result: Ahmed's guest account is created successfully with provided details.")
+#####Example 2: Successful creation (Alya)
+guest2 = Guest(21078922, "Alya Ali", date(1998, 3, 23), "alya.ali@gmail.com", LoyaltyStatus.SILVER, "EGY")
+print("\nGuest Account Creation Example 2 (Alya):")
+guest2.display_guest_info()
+print("Expected Result: Alya's guest account is created successfully with provided details.")
+
+# 2. Searching for Available Rooms
+hotel = Hotel()
+room1 = Room(220, ["Buffer entrance", "Wi-Fi"], 150, AvailabilityStatus.AVAILABLE, 3)
+room2 = Room(151, ["Garden View"], 150, AvailabilityStatus.OCCUPIED, 4)
+room3 = Room(510, ["Mini Bar", "Entertainment System"], 150, AvailabilityStatus.AVAILABLE, 4) 
+hotel.add_room(room1)
+hotel.add_room(room2)
+hotel.add_room(room3) 
+
+print("\nSearching for Available Rooms (Ahmed):")
+check_in_date_ahmed = date(2023, 3, 20)
+check_out_date_ahmed = date(2023, 3, 25)
+available_rooms_ahmed = [room for room in hotel.get_list_rooms() if room.get_availability_status() == AvailabilityStatus.AVAILABLE]
+print(f"Available rooms for Ahmed: {[room.get_room_number() for room in available_rooms_ahmed]}")
+print("Expected Result: List of available rooms matching Ahmed's criteria is displayed.")
+
+print("\nSearching for Available Rooms (Alya):")
+check_in_date_alya = date(2025, 3, 1)
+check_out_date_alya = date(2025, 3, 15)
+available_rooms_alya = [room for room in hotel.get_list_rooms() if room.get_availability_status() == AvailabilityStatus.AVAILABLE]
+print(f"Available rooms for Alya: {[room.get_room_number() for room in available_rooms_alya]}")
+print("Expected Result: List of available rooms matching Alya's criteria is displayed.")
+
+# 3. Making a Room Reservation
+booking1 = Booking(98230972, check_in_date_ahmed, check_out_date_ahmed, 150, 3)
+booking1.add_room_to_booking(room1)
+guest1.set_bookings([booking1])
+print("\nMaking a Room Reservation (Ahmed):")
+booking1.display_booking_info()
+print(f"Expected Result: Room {room1.get_room_number()} is reserved for Ahmed, and a booking ID is generated.")
+
+booking2 = Booking(21873, check_in_date_alya, check_out_date_alya, 150, 4) # Booking for Alya
+booking2.add_room_to_booking(room3) # Reserve room 3 for Alya
+guest2.set_bookings([booking2])
+print("\nMaking a Room Reservation (Alya):")
+booking2.display_booking_info()
+print(f"Expected Result: Room {room3.get_room_number()} is reserved for Alya, and a booking ID is generated.")
+
+# 4. Booking Confirmation Notification
+print("\nBooking Confirmation Notification (Ahmed):")
+print(f"Notification sent to {guest1.get_guest_name()} with booking details (room number, dates, price).")
+
+print("\nBooking Confirmation Notification (Alya):")
+print(f"Notification sent to {guest2.get_guest_name()} with booking details (room number, dates, price).")
+
+# 5. Invoice Generation for a Booking
+invoice1 = Invoice(10237, date.today(), 150, 0, 0)
+print("\nInvoice Generation for a Booking (Ahmed):")
+invoice1.display_invoice_info()
+print("Expected Result: Invoice generated with Ahmed's booking details, payment information, and 'Paid' status.")
+
+invoice2 = Invoice(21099, date.today(), 150, 0, 0) # Invoice for Alya
+print("\nInvoice Generation for a Booking (Alya):")
+invoice2.display_invoice_info()
+print("Expected Result: Invoice generated with Alya's booking details, payment information, and 'Paid' status.")
+
+# 6. Processing Different Payment Methods
+payment1 = Payment(1, PaymentMethod.CREDIT_CARD, 2000)
+print("\nProcessing Different Payment Methods Example 1 (Ahmed - Credit Card):")
+payment1.display_payment_info()
+print("Expected Result: Ahmed's payment processed successfully, and booking status updated to 'Paid'.")
+
+payment2 = Payment(2, PaymentMethod.CASH, 2500)
+print("\nProcessing Different Payment Methods Example 2 (Alya - Cash):")
+payment2.display_payment_info()
+print("Expected Result: Alya's payment processed successfully, and booking status updated to 'Paid'.")
+
+# 7. Displaying Reservation History
+print("\nDisplaying Reservation History (Ahmed):")
+print(f"List of {guest1.get_guest_name()}'s past and current reservations is displayed.")
+
+print("\nDisplaying Reservation History (Alya):")
+print(f"List of {guest2.get_guest_name()}'s past and current reservations is displayed.")
