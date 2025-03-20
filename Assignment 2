@@ -3,7 +3,7 @@ from enum import Enum
 
 class Hotel: #Represents a hotel with rooms, reservation history, and cancellation information.
     def __init__(self):
-        self._list_rooms = []  #List of Room objects
+        self._list_rooms = []  #COMPOSITION: Hotel owns the rooms
         self._number_of_available_rooms = 0  # Integer representing the number of available rooms
         self._reservation_history = ""  # String to store reservation history
         self._reservation_cancellation = ""  # String to store cancellation information
@@ -51,7 +51,7 @@ class LoyaltyStatus(Enum):
     PLATINUM = "Platinum"
 class Guest:  # Represents a guest in the hotel system.
     def __init__(self, guest_id, guest_name, guest_dob, contact_information, loyalty_status, nationality):
-        self._list_previousbooking = []  #List of previous bookings the guest had 
+        self._list_previousbooking = []  # Aggregation: List of previous bookings the guest had 
         self._guest_id = guest_id
         self._guest_name = guest_name
         self._guest_dob = guest_dob
@@ -108,8 +108,8 @@ class Guest:  # Represents a guest in the hotel system.
         
 class Booking:  # Represents a booking in the hotel system.
     def __init__(self, booking_id, check_in_date, check_out_date, total_price, number_of_guests):
-        self._list_reservation = []  #List of reservations in the booking
-        self._rooms = []  # Initialize the list of rooms
+        self._list_reservation = []  # Aggregation: Booking refers to rooms
+        self._rooms = []  # Aggregation: Booking refers to rooms
         self._booking_id = booking_id
         self._check_in_date = check_in_date
         self._check_out_date = check_out_date
@@ -225,7 +225,7 @@ class AvailabilityStatus(Enum):
     UNDER_MAINTENANCE = "Under Maintenance"
 class Room:
     def __init__(self, room_number, amenities, price_per_night, availability_status, capacity):
-        self._list_features = []  #List of features in the room
+        self._list_features = []  # Aggregation: Room owns its features
         self._room_number = room_number
         self._amenities = amenities
         self._price_per_night = price_per_night
