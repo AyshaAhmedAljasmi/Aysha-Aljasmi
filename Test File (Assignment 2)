@@ -86,7 +86,7 @@ payment2.display_payment_info()
 print("Alya's payment processed successfully, and booking status updated to 'Paid'.")
 
 ####### Example Lists with Integer IDs or other data
-print("\nList of the rooms, precious bookings, reservations, and features:")
+print("\nList of the rooms, previous bookings, reservations, and features:")
 guest1._list_previousbooking = [98230]  # Booking IDs
 guest2._list_previousbooking = [21873]
 
