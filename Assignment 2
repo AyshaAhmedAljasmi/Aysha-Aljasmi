@@ -51,7 +51,6 @@ class LoyaltyStatus(Enum):
     PLATINUM = "Platinum"
 class Guest:  # Represents a guest in the hotel system.
     def __init__(self, guest_id, guest_name, guest_dob, contact_information, loyalty_status, nationality):
-        self._list_previousbooking = []  # Aggregation: List of previous bookings the guest had 
         self._guest_id = guest_id
         self._guest_name = guest_name
         self._guest_dob = guest_dob
@@ -60,10 +59,6 @@ class Guest:  # Represents a guest in the hotel system.
         self._nationality = nationality
         self._bookings = [] #This would be the list of books booked
 # Getters and setters for the Guest attributes
-    def get_list_previousbooking(self):
-        return self._list_previousbooking  #Returns the list of the previous booking for the guest
-    def set_list_previousbooking (self, list_previousbooking):
-        self._list_previousbooking = list_previousbooking  #Sets the list of previous bookings for the guest 
     def get_guest_id(self):
         return self._guest_id #Returns the guest's ID
     def set_guest_id(self, guest_id):
@@ -109,7 +104,7 @@ class Guest:  # Represents a guest in the hotel system.
 class Booking:  # Represents a booking in the hotel system.
     def __init__(self, booking_id, check_in_date, check_out_date, total_price, number_of_guests):
         self._list_reservation = []  # Aggregation: Booking refers to rooms
-        self._rooms = []  # Aggregation: Booking refers to rooms
+        self._rooms = []  # Aggregation: Booking refers to rooms 
         self._booking_id = booking_id
         self._check_in_date = check_in_date
         self._check_out_date = check_out_date
@@ -225,17 +220,12 @@ class AvailabilityStatus(Enum):
     UNDER_MAINTENANCE = "Under Maintenance"
 class Room:
     def __init__(self, room_number, amenities, price_per_night, availability_status, capacity):
-        self._list_features = []  # Aggregation: Room owns its features
         self._room_number = room_number
         self._amenities = amenities
         self._price_per_night = price_per_night
         self._availability_status = availability_status
         self._capacity = capacity
 # Getters and setters for the Room attributes 
-    def get_list_features(self):
-        return self._list_features  #Returns the list of the features in the room
-    def set_list_features (self, list_features):
-        self._list_features = list_features  #Sets the list of features in the room
     def get_room_number(self):
         return self._room_number #Returns the room number
     def set_room_number(self, room_number): #Sets the room number
