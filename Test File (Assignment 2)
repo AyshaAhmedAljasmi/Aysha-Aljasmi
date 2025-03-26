@@ -14,13 +14,10 @@ print("Alya's guest account is created successfully with provided details.")
 # 2. Searching for Available Rooms
 hotel = Hotel()
 room1 = Room(220, ["Buffer entrance", "Wi-Fi"], 150, AvailabilityStatus.AVAILABLE, 3)
-room1.set_list_features(["King Bed", "City View"]) # Example features
 
 room2 = Room(151, ["Garden View"], 150, AvailabilityStatus.OCCUPIED, 4)
-room2.set_list_features(["Queen Bed", "Balcony"]) # Example features
 
 room3 = Room(510, ["Mini Bar", "Entertainment System"], 150, AvailabilityStatus.AVAILABLE, 4) 
-room3.set_list_features(["Double Bed", "Jacuzzi"]) # Example features
 
 hotel.set_list_rooms([room1, room2, room3]) # Set the list of rooms in hotel directly
 hotel.add_room(room1)
@@ -99,24 +96,14 @@ booking1._list_reservation = [220]
 booking2._list_reservation = [510]
 
 # Printing the lists for both guests
-print("Guest 1 Previous Bookings:", guest1._list_previousbooking)
-print("Guest 2 Previous Bookings:", guest2._list_previousbooking)
-
 print("Booking 1 Reservations:", booking1._list_reservation)
 print("Booking 2 Reservations:", booking2._list_reservation)
 
-print("Room 1 Features:", room1._list_features)
-print("Room 3 Features:", room3._list_features)
-
 print("Hotel Rooms (booking context):", hotel._rooms)
-print("Booking 1 Rooms:", booking1._rooms)
-print("Booking 2 Rooms:", booking2._rooms)
 
 print("Hotel List Rooms", hotel._list_rooms)
 print("Hotel Reservation History", hotel._reservation_history)
 print("Hotel Reservation Cancelations", hotel._reservation_cancellation)
-print("Guest 1 Bookings", guest1._bookings)
-print("Guest 2 Bookings", guest2._bookings)
 print("Booking 1 Reservations", booking1._list_reservation)
 print("Booking 2 Reservations", booking2._list_reservation)
 
