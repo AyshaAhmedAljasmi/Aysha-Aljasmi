@@ -1,0 +1,290 @@
+import uuid # For generating unique IDs for new entries
+
+# --- Simulated Database Tables (Python Lists of Dictionaries) ---
+# These lists mimic your 9 tables and are pre-populated with sample data.
+# 1. Students Table
+students_db = [
+    {"StudentUniversityID": 3453, "StudentFirstName": "Maryam", "StudentLastName": "Ahmed", "StudentGender": "F", "StudentPhoneNumber": "0508392327", "StudentEmail": "Maryam.Ahmed@gmail.com"},
+    {"StudentUniversityID": 3105, "StudentFirstName": "Fatima", "StudentLastName": "Ali", "StudentGender": "F", "StudentPhoneNumber": "0508394372", "StudentEmail": "Fatima.Ali@gmail.com"},
+    {"StudentUniversityID": 3022, "StudentFirstName": "Hamdan", "StudentLastName": "Youssef", "StudentGender": "M", "StudentPhoneNumber": "0506198238", "StudentEmail": "Hamdan.Youssef@gmail.com"}]
+# 2. Category Table
+categories_db = [
+    {"CategoryID": 1084, "CategoryName": "Mathematics", "CategoryDescription": "The study of numbers, shapes, patterns, and their relationships."},
+    {"CategoryID": 1872, "CategoryName": "Programming", "CategoryDescription": "Creating a computer program, that a computer can follow to perform specific tasks."},
+    {"CategoryID": 1536, "CategoryName": "Science", "CategoryDescription": "Application of knowledge and understanding of the natural and social world following a systematic methodology based on evidence."}]
+# 3. Subcategory Table
+subcategories_db = [
+    {"SubcategoryID": 2781, "CategoryID": 1536, "SubcategoryName": "Physics", "SubcategoryDescription": "A subcategory of science that is the study of matter, energy, and their interactions."},
+    {"SubcategoryID": 2900, "CategoryID": 1084, "SubcategoryName": "Calculus", "SubcategoryDescription": "A subcategory of mathematics that uses symbols, usually letters, to represent numbers and quantities."},
+    {"SubcategoryID": 2013, "CategoryID": 1872, "SubcategoryName": "Python", "SubcategoryDescription": "A subcategory of programming that is a programming language which lets you work quickly and integrate systems more effectively."}]
+# 4. Tutor Table
+tutors_db = [
+    {"TutorID": 3892, "TutorFirstName": "Salem", "TutorLastName": "Saeed", "TutorPhoneNumber": "0501189273", "TutorEmail": "Salem.Saeed@gmail.com"},
+    {"TutorID": 3741, "TutorFirstName": "Noora", "TutorLastName": "Hamdan", "TutorPhoneNumber": "0509398291", "TutorEmail": "Noora.Hamdan@gmail.com"},
+    {"TutorID": 3018, "TutorFirstName": "Shamma", "TutorLastName": "Saif", "TutorPhoneNumber": "0505151672", "TutorEmail": "Shamma.Saif@com"}]
+# 5. TutorExpertise Table
+tutor_expertise_db = [
+    {"TutorExpertiseID": 1, "TutorID": 3892, "SubcategoryID": 2781}, # Salem Saeed - Physics
+    {"TutorExpertiseID": 2, "TutorID": 3741, "SubcategoryID": 2900}, # Noora Hamdan - Calculus
+    {"TutorExpertiseID": 3, "TutorID": 3018, "SubcategoryID": 2013}]  # Shamma Saif - Python
+# 6. Availability Table
+availability_db = [
+    {"AvailabilityID": 7821, "TutorID": 3892, "AvailabilityStartTime": "17/7/2025 9:00 am", "AvailabilityEndTime": "17/7/2025 2:00 pm", "AvailabilityStatus": "Available"},
+    {"AvailabilityID": 7672, "TutorID": 3741, "AvailabilityStartTime": "17/7/2025 1:00 am", "AvailabilityEndTime": "17/7/2025 5:00 pm", "AvailabilityStatus": "Not Available"},
+    {"AvailabilityID": 7403, "TutorID": 3018, "AvailabilityStartTime": "19/7/2025 3:00 pm", "AvailabilityEndTime": "19/7/2025 5:30 pm", "AvailabilityStatus": "Not Available"}]
+# 7. Sessions Table
+sessions_db = [
+    {"SessionID": 728, "TutorID": 3892, "StudentUniversityID": 3453, "SubcategoryID": 2781, "SessionType": "In-Person", "SessionStatus": "Confirmed", "SessionLocation": "Library", "SessionDateTime": "16/7/2025 10:00 am"},
+    {"SessionID": 892, "TutorID": 3741, "StudentUniversityID": 3105, "SubcategoryID": 2900, "SessionType": "Online", "SessionStatus": "Confirmed", "SessionLocation": "ZoomOnline", "SessionDateTime": "12/7/2025 9:00 am"},
+    {"SessionID": 116, "TutorID": 3018, "StudentUniversityID": 3022, "SubcategoryID": 2013, "SessionType": "In-Person", "SessionStatus": "Pending", "SessionLocation": "Library", "SessionDateTime": "1/7/2025 5:00 pm"}]
+# 8. Rating Table
+ratings_db = [
+    {"RatingID": 5137, "SessionID": 728, "StudentUniversityID": 3453, "TutorID": 3892, "Rating": 2, "StudentComment": "The course was advanced, and I wish there were more fun activities.", "ReviewDate": "2025-06-05"},
+    {"RatingID": 5681, "SessionID": 892, "StudentUniversityID": 3105, "TutorID": 3741, "Rating": 5, "StudentComment": "The course was exciting, and I enjoyed learning new things.", "ReviewDate": "2025-06-02"},
+    {"RatingID": 6092, "SessionID": 116, "StudentUniversityID": 3022, "TutorID": 3018, "Rating": 4, "StudentComment": "The course was challenging, but there were fun assignments to complete.", "ReviewDate": "2025-07-02"}]
+# 9. Admin Table
+admins_db = [
+    {"AdminID": 8943, "AdminFirstName": "Malik", "AdminLastName": "Amir", "AdminEmail": "Malik.Amir@gmail.com", "AdminPhoneNumber": "0507839283"},
+    {"AdminID": 8683, "AdminFirstName": "Omar", "AdminLastName": "Hassan", "AdminEmail": "Omar.Hassan@gmail.com", "AdminPhoneNumber": "0525627189"},
+    {"AdminID": 8102, "AdminFirstName": "Mahra", "AdminLastName": "Muhammad", "AdminEmail": "Mahra.Muhammad@gmail.com", "AdminPhoneNumber": "0505672634"}]
+# --- Helper Functions ---
+def get_next_id(db_list, id_key):
+    """Generates a unique ID for a new entry."""
+    if not db_list:
+        return 1
+    return max(item[id_key] for item in db_list) + 1
+def find_record_by_id(db_list, id_key, record_id):
+    """Finds a record in a list of dictionaries by its ID."""
+    for record in db_list:
+        if record[id_key] == record_id:
+            return record
+    return None
+def display_table(data_list, table_name):
+    """Displays the contents of a given table."""
+    if not data_list:
+        print(f"\n--- {table_name} (No Records) ---")
+        return
+    print(f"\n--- {table_name} ---")
+    headers = list(data_list[0].keys())
+    # Print headers
+    print(" | ".join(f"{h:<20}" for h in headers))
+    print("-" * (len(headers) * 22))
+    # Print data
+    for row in data_list:
+        print(" | ".join(f"{str(row.get(h, 'N/A')):<20}" for h in headers))
+    print("-" * (len(headers) * 22))
+def get_valid_input(prompt, type_func=str, validation_func=None, error_message="Invalid input. Please try again."):
+    """Helper for robust user input."""
+    while True:
+        user_input = input(prompt)
+        try:
+            value = type_func(user_input)
+            # Apply validation function if provided
+            if validation_func and not validation_func(value):
+                print(error_message)
+                continue
+            return value
+        except ValueError:
+            print(error_message)
+
+# --- Application Functions ---
+def add_tutor_info():
+    """Allows the user to enter new tutor information, enforcing NOT NULL constraints."""
+    print("\n--- Enter New Tutor Information ---")
+    new_tutor_id = get_next_id(tutors_db, "TutorID")
+    print(f"New Tutor ID: {new_tutor_id}")
+    # Enforcing NOT NULL for these fields
+    first_name = get_valid_input("Enter Tutor First Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="First Name cannot be empty.")
+    last_name = get_valid_input("Enter Tutor Last Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="Last Name cannot be empty.")
+    phone_number = get_valid_input("Enter Tutor Phone Number (required): ", validation_func=lambda x: bool(x.strip()), error_message="Phone Number cannot be empty.")
+    email = get_valid_input("Enter Tutor Email (required): ", validation_func=lambda x: bool(x.strip()), error_message="Email cannot be empty.")
+    new_tutor = {
+        "TutorID": new_tutor_id,
+        "TutorFirstName": first_name,
+        "TutorLastName": last_name,
+        "TutorPhoneNumber": phone_number,
+        "TutorEmail": email}
+    tutors_db.append(new_tutor)
+    print(f"Tutor '{first_name} {last_name}' (ID: {new_tutor_id}) added successfully!")
+    # Offer to add expertise for the new tutor
+    while True:
+        add_expertise = get_valid_input("Add expertise for this tutor? (yes/no): ").lower()
+        if add_expertise == 'yes':
+            add_tutor_expertise(new_tutor_id)
+        elif add_expertise == 'no':
+            break
+        else:
+            print("Please enter 'yes' or 'no'.")
+def add_tutor_expertise(tutor_id):
+    """Allows adding expertise for a given tutor."""
+    display_table(subcategories_db, "Available Subcategories")
+    while True:
+        try:
+            subcategory_id = get_valid_input("Enter Subcategory ID for expertise (or '0' to finish): ", type_func=int)
+            if subcategory_id == 0:
+                break
+            if not find_record_by_id(subcategories_db, "SubcategoryID", subcategory_id):
+                print("Subcategory ID not found. Please choose from the list.")
+                continue
+            # Check if expertise already exists
+            if any(te["TutorID"] == tutor_id and te["SubcategoryID"] == subcategory_id for te in tutor_expertise_db):
+                print("This tutor already has expertise in this subcategory.")
+                continue
+            new_expertise_id = get_next_id(tutor_expertise_db, "TutorExpertiseID")
+            tutor_expertise_db.append({
+                "TutorExpertiseID": new_expertise_id,
+                "TutorID": tutor_id,
+                "SubcategoryID": subcategory_id
+            })
+            print(f"Expertise added for Tutor ID {tutor_id} in Subcategory ID {subcategory_id}.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+def view_information():
+    """Allows the user to view information from various tables."""
+    while True:
+        print("\n--- View Information ---")
+        print("1. View Students")
+        print("2. View Tutors")
+        print("3. View Categories")
+        print("4. View Subcategories")
+        print("5. View Sessions")
+        print("6. View Availability")
+        print("7. View Ratings")
+        print("8. View Admins")
+        print("9. View Tutor Expertise")
+        print("0. Back to Main Menu")
+
+        choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 9)
+        if choice == 1:
+            display_table(students_db, "Students Table")
+        elif choice == 2:
+            display_table(tutors_db, "Tutors Table")
+        elif choice == 3:
+            display_table(categories_db, "Categories Table")
+        elif choice == 4:
+            display_table(subcategories_db, "Subcategories Table")
+        elif choice == 5:
+            display_table(sessions_db, "Sessions Table")
+        elif choice == 6:
+            display_table(availability_db, "Availability Table")
+        elif choice == 7:
+            display_table(ratings_db, "Ratings Table")
+        elif choice == 8:
+            display_table(admins_db, "Admins Table")
+        elif choice == 9:
+            display_table(tutor_expertise_db, "Tutor Expertise Table")
+        elif choice == 0:
+            break
+        else:
+            print("Invalid choice. Please try again.")
+def update_information():
+    """Allows the user to update information in various tables."""
+    while True:
+        print("\n--- Update Information ---")
+        print("1. Update Tutor Information")
+        print("2. Update Student Information")
+        print("3. Update Session Information")
+        print("0. Back to Main Menu")
+        choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 3)
+
+        if choice == 1:
+            update_tutor_info()
+        elif choice == 2:
+            update_student_info()
+        elif choice == 3:
+            update_session_info()
+        elif choice == 0:
+            break
+        else:
+            print("Invalid choice. Please try again.")
+def update_tutor_info():
+    """Updates an existing tutor's information."""
+    display_table(tutors_db, "Tutors Table")
+    tutor_id = get_valid_input("Enter Tutor ID to update: ", type_func=int)
+    tutor = find_record_by_id(tutors_db, "TutorID", tutor_id)
+    if tutor:
+        print(f"Updating Tutor ID: {tutor_id}")
+        print("Enter new values (leave blank to keep current value):")
+        # Added validation for non-empty input if a new value is provided
+        tutor["TutorFirstName"] = get_valid_input(f"  First Name ({tutor['TutorFirstName']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="First Name cannot be empty if provided.") or tutor["TutorFirstName"]
+        tutor["TutorLastName"] = get_valid_input(f"  Last Name ({tutor['TutorLastName']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Last Name cannot be empty if provided.") or tutor["TutorLastName"]
+        tutor["TutorPhoneNumber"] = get_valid_input(f"  Phone Number ({tutor['TutorPhoneNumber']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Phone Number cannot be empty if provided.") or tutor["TutorPhoneNumber"]
+        tutor["TutorEmail"] = get_valid_input(f"  Email ({tutor['TutorEmail']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Email cannot be empty if provided.") or tutor["TutorEmail"]
+        print(f"Tutor ID {tutor_id} updated successfully!")
+    else:
+        print(f"Tutor with ID {tutor_id} not found.")
+def update_student_info():
+    """Updates an existing student's information."""
+    display_table(students_db, "Students Table")
+    student_id = get_valid_input("Enter Student University ID to update: ", type_func=int)
+    student = find_record_by_id(students_db, "StudentUniversityID", student_id)
+
+    if student:
+        print(f"Updating Student ID: {student_id}")
+        print("Enter new values (leave blank to keep current value):")
+        # Added validation for non-empty input if a new value is provided
+        student["StudentFirstName"] = get_valid_input(f"  First Name ({student['StudentFirstName']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="First Name cannot be empty if provided.") or student["StudentFirstName"]
+        student["StudentLastName"] = get_valid_input(f"  Last Name ({student['StudentLastName']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Last Name cannot be empty if provided.") or student["StudentLastName"]
+        student["StudentGender"] = get_valid_input(f"  Gender ({student['StudentGender']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Gender cannot be empty if provided.") or student["StudentGender"]
+        student["StudentPhoneNumber"] = get_valid_input(f"  Phone Number ({student['StudentPhoneNumber']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Phone Number cannot be empty if provided.") or student["StudentPhoneNumber"]
+        student["StudentEmail"] = get_valid_input(f"  Email ({student['StudentEmail']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Email cannot be empty if provided.") or student["StudentEmail"]
+        print(f"Student ID {student_id} updated successfully!")
+    else:
+        print(f"Student with ID {student_id} not found.")
+def update_session_info():
+    """Updates an existing session's information."""
+    display_table(sessions_db, "Sessions Table")
+    session_id = get_valid_input("Enter Session ID to update: ", type_func=int)
+    session = find_record_by_id(sessions_db, "SessionID", session_id)
+
+    if session:
+        print(f"Updating Session ID: {session_id}")
+        print("Enter new values (leave blank to keep current value):")
+        
+        # For FKs, we can offer to update, but need to validate existence
+        # Added validation for non-empty input if a new value is provided for FKs
+        new_tutor_id = get_valid_input(f"  Tutor ID ({session['TutorID']}): ", type_func=int, validation_func=lambda x: find_record_by_id(tutors_db, "TutorID", x) is not None or x == '', error_message="Tutor ID not found. Please enter an existing Tutor ID.")
+        session["TutorID"] = new_tutor_id if new_tutor_id != '' else session["TutorID"] # Handle empty string for int input
+
+        new_student_id = get_valid_input(f"  Student University ID ({session['StudentUniversityID']}): ", type_func=int, validation_func=lambda x: find_record_by_id(students_db, "StudentUniversityID", x) is not None or x == '', error_message="Student ID not found. Please enter an existing Student ID.")
+        session["StudentUniversityID"] = new_student_id if new_student_id != '' else session["StudentUniversityID"]
+
+        new_subcategory_id = get_valid_input(f"  Subcategory ID ({session['SubcategoryID']}): ", type_func=int, validation_func=lambda x: find_record_by_id(subcategories_db, "SubcategoryID", x) is not None or x == '', error_message="Subcategory ID not found. Please enter an existing Subcategory ID.")
+        session["SubcategoryID"] = new_subcategory_id if new_subcategory_id != '' else session["SubcategoryID"]
+
+        # Added validation for non-empty input if a new value is provided for other session fields
+        session["SessionType"] = get_valid_input(f"  Session Type ({session['SessionType']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Session Type cannot be empty if provided.") or session["SessionType"]
+        session["SessionStatus"] = get_valid_input(f"  Session Status ({session['SessionStatus']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Session Status cannot be empty if provided.") or session["SessionStatus"]
+        session["SessionLocation"] = get_valid_input(f"  Session Location ({session['SessionLocation']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Session Location cannot be empty if provided.") or session["SessionLocation"]
+        session["SessionDateTime"] = get_valid_input(f"  Session Date/Time ({session['SessionDateTime']}): ", validation_func=lambda x: bool(x.strip()) or x == '', error_message="Session Date/Time cannot be empty if provided.") or session["SessionDateTime"]
+        
+        print(f"Session ID {session_id} updated successfully!")
+    else:
+        print(f"Session with ID {session_id} not found.")
+
+
+# --- Main Application Loop ---
+def main():
+    """Main function to run the menu-based application."""
+    print("Welcome to the Study Club Database Application!")
+    while True:
+        print("\n--- Main Menu ---")
+        print("1. Enter Data")
+        print("2. View Information")
+        print("3. Update Information")
+        print("0. Exit")
+        choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 3)
+
+        if choice == 1:
+            add_tutor_info()
+        elif choice == 2:
+            view_information()
+        elif choice == 3:
+            update_information()
+        elif choice == 0:
+            print("Exiting application. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+if __name__ == "__main__":
+    main()
