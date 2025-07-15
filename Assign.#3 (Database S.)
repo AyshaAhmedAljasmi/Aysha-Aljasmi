@@ -6,9 +6,9 @@ import datetime # For handling dates and times, used for ReviewDate and new sess
 
 # 1. Students Table: Stores information about students.
 students_db = [
-    {"StudentUniversityID": 3453, "StudentFirstName": "Maryam", "StudentLastName": "Ahmed", "StudentGender": "F", "StudentPhoneNumber": "0508392327", "StudentEmail": "Maryam.Ahmed@gmail.com"},
-    {"StudentUniversityID": 3105, "StudentFirstName": "Fatima", "StudentLastName": "Ali", "StudentGender": "F", "StudentPhoneNumber": "0508394372", "StudentEmail": "Fatima.Ali@gmail.com"},
-    {"StudentUniversityID": 3022, "StudentFirstName": "Hamdan", "StudentLastName": "Youssef", "StudentGender": "M", "StudentPhoneNumber": "0506198238", "StudentEmail": "Hamdan.Youssef@gmail.com"}
+    {"StudentUniversityID": 3453, "AdminID": 8943, "StudentFirstName": "Maryam", "StudentLastName": "Ahmed", "StudentGender": "F", "StudentPhoneNumber": "0508392327", "StudentEmail": "Maryam.Ahmed@gmail.com"},
+    {"StudentUniversityID": 3105, "AdminID": 8683, "StudentFirstName": "Fatima", "StudentLastName": "Ali", "StudentGender": "F", "StudentPhoneNumber": "0508394372", "StudentEmail": "Fatima.Ali@gmail.com"},
+    {"StudentUniversityID": 3022, "AdminID": 8102, "StudentFirstName": "Hamdan", "StudentLastName": "Youssef", "StudentGender": "M", "StudentPhoneNumber": "0506198238", "StudentEmail": "Hamdan.Youssef@gmail.com"}
 ]
 
 # 2. Category Table: Defines broad subject categories.
@@ -27,9 +27,9 @@ subcategories_db = [
 
 # 4. Tutor Table: Stores information about tutors.
 tutors_db = [
-    {"TutorID": 3892, "TutorFirstName": "Salem", "TutorLastName": "Saeed", "TutorPhoneNumber": "0501189273", "TutorEmail": "Salem.Saeed@gmail.com"},
-    {"TutorID": 3741, "TutorFirstName": "Noora", "TutorLastName": "Hamdan", "TutorPhoneNumber": "0509398291", "TutorEmail": "Noora.Hamdan@gmail.com"},
-    {"TutorID": 3018, "TutorFirstName": "Shamma", "TutorLastName": "Saif", "TutorPhoneNumber": "0505151672", "TutorEmail": "Shamma.Saif@com"}
+    {"TutorID": 3892, "AdminID": 8943, "TutorFirstName": "Salem", "TutorLastName": "Saeed", "TutorPhoneNumber": "0501189273", "TutorEmail": "Salem.Saeed@gmail.com"},
+    {"TutorID": 3741, "AdminID": 8683, "TutorFirstName": "Noora", "TutorLastName": "Hamdan", "TutorPhoneNumber": "0509398291", "TutorEmail": "Noora.Hamdan@gmail.com"},
+    {"TutorID": 3018, "AdminID": 8102, "TutorFirstName": "Shamma", "TutorLastName": "Saif", "TutorPhoneNumber": "0505151672", "TutorEmail": "Shamma.Saif@com"}
 ]
 
 # 5. TutorExpertise Table: A linking table for a many-to-many relationship between Tutors and Subcategories.
@@ -127,6 +127,10 @@ def add_tutor_info(): #Allows the user to enter new tutor information.
     new_tutor_id = get_next_id(tutors_db, "TutorID") # Get the next available ID
     print(f"New Tutor ID: {new_tutor_id}")
 
+    # Prompt for AdminID
+    display_table(admins_db, "Available Admins")
+    admin_id = get_valid_input("Enter Admin ID for this tutor (required): ", type_func=int, validation_func=lambda x: find_record_by_id(admins_db, "AdminID", x) is not None, error_message="Admin ID not found. Please enter an existing Admin ID.")
+
     # Prompt for required fields, using validation to ensure they are not empty
     first_name = get_valid_input("Enter Tutor First Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="First Name cannot be empty.")
     last_name = get_valid_input("Enter Tutor Last Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="Last Name cannot be empty.")
@@ -136,6 +140,7 @@ def add_tutor_info(): #Allows the user to enter new tutor information.
     # Create the new tutor dictionary
     new_tutor = {
         "TutorID": new_tutor_id,
+        "AdminID": admin_id,
         "TutorFirstName": first_name,
         "TutorLastName": last_name,
         "TutorPhoneNumber": phone_number,
@@ -185,6 +190,10 @@ def add_student_info(): #Allows the user to enter new student information
     new_student_id = get_next_id(students_db, "StudentUniversityID")
     print(f"New Student University ID: {new_student_id}")
 
+    # Prompt for AdminID
+    display_table(admins_db, "Available Admins")
+    admin_id = get_valid_input("Enter Admin ID for this student (required): ", type_func=int, validation_func=lambda x: find_record_by_id(admins_db, "AdminID", x) is not None, error_message="Admin ID not found. Please enter an existing Admin ID.")
+
     first_name = get_valid_input("Enter Student First Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="First Name cannot be empty.")
     last_name = get_valid_input("Enter Student Last Name (required): ", validation_func=lambda x: bool(x.strip()), error_message="Last Name cannot be empty.")
     gender = get_valid_input("Enter Student Gender (M/F, required): ", validation_func=lambda x: x.upper() in ['M', 'F'], error_message="Gender must be 'M' or 'F'.").upper()
@@ -193,6 +202,7 @@ def add_student_info(): #Allows the user to enter new student information
 
     new_student = {
         "StudentUniversityID": new_student_id,
+        "AdminID": admin_id,
         "StudentFirstName": first_name,
         "StudentLastName": last_name,
         "StudentGender": gender,
@@ -338,6 +348,23 @@ def update_tutor_info(): #Updates an existing tutor's information.
         print(f"Updating Tutor ID: {tutor_id}")
         print("Enter new values (leave blank to keep current value):")
 
+        # Helper function specifically for updating Foreign Keys.
+        def get_fk_update(prompt, current_fk, db_list, id_key, error_msg):
+            while True:
+                user_input = input(prompt).strip()
+                if not user_input: # If user leaves blank, return current FK value
+                    return current_fk
+                try:
+                    new_fk = int(user_input) # Try to convert to int
+                    if find_record_by_id(db_list, id_key, new_fk) is not None:
+                        return new_fk # Return new FK if found in referenced table
+                    else:
+                        print(error_msg) # Print error if FK not found
+                except ValueError:
+                    print("Invalid input. Please enter a number or leave blank.") # Error for non-numeric input
+
+        tutor["AdminID"] = get_fk_update(f"  Admin ID (current: {tutor['AdminID']}): ", tutor["AdminID"], admins_db, "AdminID", "Admin ID not found. Please enter an existing Admin ID.")
+
         # For each field, get new input. If input is not empty, update the record.
         new_first_name = get_valid_input(f"  First Name (current: {tutor['TutorFirstName']}): ")
         if new_first_name: 
@@ -363,6 +390,24 @@ def update_student_info(): #Updates an existing student's information.
     if student:
         print(f"Updating Student ID: {student_id}")
         print("Enter new values (leave blank to keep current value):")
+
+        # Helper function specifically for updating Foreign Keys.
+        def get_fk_update(prompt, current_fk, db_list, id_key, error_msg):
+            while True:
+                user_input = input(prompt).strip()
+                if not user_input: # If user leaves blank, return current FK value
+                    return current_fk
+                try:
+                    new_fk = int(user_input) # Try to convert to int
+                    if find_record_by_id(db_list, id_key, new_fk) is not None:
+                        return new_fk # Return new FK if found in referenced table
+                    else:
+                        print(error_msg) # Print error if FK not found
+                except ValueError:
+                    print("Invalid input. Please enter a number or leave blank.") # Error for non-numeric input
+
+        student["AdminID"] = get_fk_update(f"  Admin ID (current: {student['AdminID']}): ", student["AdminID"], admins_db, "AdminID", "Admin ID not found. Please enter an existing Admin ID.")
+
         new_first_name = get_valid_input(f"  First Name (current: {student['StudentFirstName']}): ")
         if new_first_name: 
             student["StudentFirstName"] = new_first_name
