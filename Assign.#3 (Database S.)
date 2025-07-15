@@ -56,12 +56,11 @@ sessions_db = [
     {"SessionID": 116, "TutorID": 3018, "StudentUniversityID": 3022, "SubcategoryID": 2013, "SessionType": "In-Person", "SessionStatus": "Pending", "SessionLocation": "Library", "SessionTime": "05:00 pm", "SessionDate": "2025-07-01"}
 ]
 
-# 8. Rating Table: Stores student ratings and reviews for tutors.
-# The 'Rating' field is now a float to allow for decimal ratings (e.g., 3.5), matching the corrected description.
+# 8. Rating Table: Stores student ratings and reviews for sessions.
 ratings_db = [
-    {"RatingID": 5137, "SessionID": 728, "StudentUniversityID": 3453, "TutorID": 3892, "Rating": 2.0, "StudentComment": "The course was advanced, and I wish there were more fun activities.", "ReviewDate": "2025-06-05"},
-    {"RatingID": 5681, "SessionID": 892, "StudentUniversityID": 3105, "TutorID": 3741, "Rating": 5.0, "StudentComment": "The course was exciting, and I enjoyed learning new things.", "ReviewDate": "2025-06-02"},
-    {"RatingID": 6092, "SessionID": 116, "TutorID": 3018, "StudentUniversityID": 3022, "Rating": 3.5, "StudentComment": "The course was challenging, but there were fun assignments to complete.", "ReviewDate": "2025-07-02"}
+    {"RatingID": 5137, "SessionID": 728, "Rating": 2.0, "StudentComment": "The course was advanced, and I wish there were more fun activities.", "ReviewDate": "2025-06-05"},
+    {"RatingID": 5681, "SessionID": 892, "Rating": 5.0, "StudentComment": "The course was exciting, and I enjoyed learning new things.", "ReviewDate": "2025-06-02"},
+    {"RatingID": 6092, "SessionID": 116, "Rating": 3.5, "StudentComment": "The course was challenging, but there were fun assignments to complete.", "ReviewDate": "2025-07-02"}
 ]
 
 # 9. Admin Table: Stores information about administrative users.
@@ -103,7 +102,7 @@ def display_table(data_list, table_name): #Displays the contents of a given tabl
 def get_valid_input(prompt, type_func=str, validation_func=None, error_message="Invalid input. Please try again."):
     while True:
         user_input = input(prompt).strip() # Get input and remove leading/trailing whitespace
-        if not user_input and type_func != int: 
+        if not user_input and type_func != int: # Allows empty string for optional string inputs
             return user_input
 
         try:
@@ -254,21 +253,36 @@ def add_rating_info(): #Allows the user to add new rating information for a sess
     display_table(sessions_db, "Existing Sessions") # Show existing sessions to help user
     session_id = get_valid_input("Enter Session ID for this rating (required): ", type_func=int, validation_func=lambda x: find_record_by_id(sessions_db, "SessionID", x) is not None, error_message="Session ID not found. Please enter an existing Session ID.")
     
-    # Retrieve associated TutorID and StudentUniversityID from the selected session
+    # Based on the new Rating table description ("Third and Second Normal Form"),
+    # StudentUniversityID and TutorID are NOT direct fields in the Rating table.
+    # We retrieve them from the session for informational purposes, but don't store them in ratings_db.
     session_record = find_record_by_id(sessions_db, "SessionID", session_id)
-    tutor_id = session_record["TutorID"]
-    student_id = session_record["StudentUniversityID"]
-    
-    print(f"Rating will be associated with Tutor ID: {tutor_id}, Student ID: {student_id} from Session ID: {session_id}")
+    if session_record: # Check if session_record was found
+        tutor_id = session_record["TutorID"]
+        student_id = session_record["StudentUniversityID"]
+        print(f"Rating will be associated with Tutor ID: {tutor_id}, Student ID: {student_id} (from Session ID: {session_id})")
+    else:
+        # This case should ideally be caught by the validation_func for session_id,
+        # but as a fallback for clarity.
+        print(f"Could not retrieve tutor/student IDs for Session ID: {session_id}.")
+        return # Exit if session not found, although validation should prevent this.
+
+
     # Prompt for rating value, enforcing float type and range (0.0-5.0)
     rating_value = get_valid_input("Enter Rating (0.0 to 5.0, required): ", type_func=float, validation_func=lambda x: 0.0 <= x <= 5.0, error_message="Rating must be a number between 0.0 and 5.0.")
-    student_comment = get_valid_input("Enter Student Comment (optional, leave blank if none): ") # Comment is optional
+    
+    # StudentComment is VARCHAR(150) and NOT NULL, but for practical application,
+    # we'll allow it to be optional for user entry, converting empty string to a default.
+    student_comment = get_valid_input("Enter Student Comment (optional, leave blank if none): ") 
+    if not student_comment: # If user leaves blank, set to an empty string or 'N/A' as appropriate for 'NOT NULL'
+        student_comment = "" # Or "No comment provided" if you prefer a placeholder
+    
     review_date = datetime.date.today().strftime("%Y-%m-%d") # Automatically set review date to today
+    
     new_rating = {
         "RatingID": new_rating_id,
         "SessionID": session_id,
-        "StudentUniversityID": student_id,
-        "TutorID": tutor_id,
+        # StudentUniversityID and TutorID are explicitly removed as direct fields based on the new description
         "Rating": rating_value,
         "StudentComment": student_comment,
         "ReviewDate": review_date
@@ -367,16 +381,16 @@ def update_tutor_info(): #Updates an existing tutor's information.
 
         # For each field, get new input. If input is not empty, update the record.
         new_first_name = get_valid_input(f"  First Name (current: {tutor['TutorFirstName']}): ")
-        if new_first_name: 
+        if new_first_name:  
             tutor["TutorFirstName"] = new_first_name
         new_last_name = get_valid_input(f"  Last Name (current: {tutor['TutorLastName']}): ")
-        if new_last_name: 
+        if new_last_name:  
             tutor["TutorLastName"] = new_last_name
         new_phone_number = get_valid_input(f"  Phone Number (current: {tutor['TutorPhoneNumber']}): ")
-        if new_phone_number: 
+        if new_phone_number:  
             tutor["TutorPhoneNumber"] = new_phone_number
         new_email = get_valid_input(f"  Email (current: {tutor['TutorEmail']}): ")
-        if new_email: 
+        if new_email:  
             tutor["TutorEmail"] = new_email
         print(f"Tutor ID {tutor_id} updated successfully!")
     else:
@@ -409,22 +423,22 @@ def update_student_info(): #Updates an existing student's information.
         student["AdminID"] = get_fk_update(f"  Admin ID (current: {student['AdminID']}): ", student["AdminID"], admins_db, "AdminID", "Admin ID not found. Please enter an existing Admin ID.")
 
         new_first_name = get_valid_input(f"  First Name (current: {student['StudentFirstName']}): ")
-        if new_first_name: 
+        if new_first_name:  
             student["StudentFirstName"] = new_first_name
         new_last_name = get_valid_input(f"  Last Name (current: {student['StudentLastName']}): ")
-        if new_last_name: 
+        if new_last_name:  
             student["StudentLastName"] = new_last_name
         # Validate gender: 'M', 'F', or empty string for no change
         new_gender = get_valid_input(f"  Gender (M/F, current: {student['StudentGender']}): ", 
                                      validation_func=lambda x: x.upper() in ['M', 'F', ''] or not x.strip(), 
                                      error_message="Gender must be 'M', 'F', or leave blank.").upper()
-        if new_gender: 
+        if new_gender:  
             student["StudentGender"] = new_gender
         new_phone_number = get_valid_input(f"  Phone Number (current: {student['StudentPhoneNumber']}): ")
-        if new_phone_number: 
+        if new_phone_number:  
             student["StudentPhoneNumber"] = new_phone_number
         new_email = get_valid_input(f"  Email (current: {student['StudentEmail']}): ")
-        if new_email: 
+        if new_email:  
             student["StudentEmail"] = new_email
         print(f"Student ID {student_id} updated successfully!")
     else:
@@ -460,23 +474,24 @@ def update_session_info(): #Updates an existing session's information.
 
         # Update other session fields using the standard get_valid_input
         new_session_type = get_valid_input(f"  Session Type (current: {session['SessionType']}): ")
-        if new_session_type: 
+        if new_session_type:  
             session["SessionType"] = new_session_type
         new_session_status = get_valid_input(f"  Session Status (current: {session['SessionStatus']}): ")
-        if new_session_status: 
+        if new_session_status:  
             session["SessionStatus"] = new_session_status
         new_session_location = get_valid_input(f"  Session Location (current: {session['SessionLocation']}): ")
-        if new_session_location: 
+        if new_session_location:  
             session["SessionLocation"] = new_session_location
         new_session_time = get_valid_input(f"  Session Time (current: {session['SessionTime']}): ")
-        if new_session_time: 
+        if new_session_time:  
             session["SessionTime"] = new_session_time
         new_session_date = get_valid_input(f"  Session Date (current: {session['SessionDate']}): ")
-        if new_session_date: 
+        if new_session_date:  
             session["SessionDate"] = new_session_date
         print(f"Session ID {session_id} updated successfully!")
     else:
         print(f"Session with ID {session_id} not found.")
+
 def update_rating_info(): #Updates an existing rating's information.
     display_table(ratings_db, "Ratings Table") # Show current ratings
     rating_id = get_valid_input("Enter Rating ID to update: ", type_func=int)
@@ -500,15 +515,17 @@ def update_rating_info(): #Updates an existing rating's information.
         
         # Handle 'StudentComment' field
         new_student_comment = get_valid_input(f"  Student Comment (current: {rating_record['StudentComment']}): ")
-        if new_student_comment: 
+        # Ensure it's stored as an empty string if blank input is given, to match NOT NULL
+        if new_student_comment or new_student_comment == '': # Allow setting to empty string
             rating_record["StudentComment"] = new_student_comment
+        # If user left blank for current value, and it was empty, it stays empty.
 
         # Handle 'ReviewDate' field: allow date string input and basic format validation
         new_review_date_str = get_valid_input(f"  Review Date (YYYY-MM-DD, current: {rating_record['ReviewDate']}): ")
         if new_review_date_str:
             try:
                 # Attempt to parse date to validate format
-                datetime.datetime.strptime(new_review_date_str, "%Y-%m-%d").date() 
+                datetime.datetime.strptime(new_review_date_str, "%Y-%m-%d").date()  
                 rating_record["ReviewDate"] = new_review_date_str
             except ValueError:
                 print("Invalid date format. Please use YYYY-MM-DD. Keeping current value.")
@@ -527,10 +544,9 @@ def main(): #Main function to run the menu-based application.
         print("2. View Information")
         print("3. Update Information")
         print("0. Exit")
-        choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 3)
+        choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 3 or x == 0) # Adjusted validation for choice
 
         if choice == 1:
-            # Sub-menu for entering different types of data
             while True:
                 print("\n--- Enter Data Menu ---")
                 print("1. Add New Tutor")
@@ -538,17 +554,17 @@ def main(): #Main function to run the menu-based application.
                 print("3. Schedule New Session")
                 print("4. Add New Rating")
                 print("0. Back to Main Menu")
-                add_choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 4)
-                if add_choice == 1:
+                enter_choice = get_valid_input("Enter your choice: ", type_func=int, validation_func=lambda x: 0 <= x <= 4)
+                if enter_choice == 1:
                     add_tutor_info()
-                elif add_choice == 2:
+                elif enter_choice == 2:
                     add_student_info()
-                elif add_choice == 3:
+                elif enter_choice == 3:
                     add_session_info()
-                elif add_choice == 4:
+                elif enter_choice == 4:
                     add_rating_info()
-                elif add_choice == 0:
-                    break # Back to main menu
+                elif enter_choice == 0:
+                    break
                 else:
                     print("Invalid choice. Please try again.")
         elif choice == 2:
@@ -557,10 +573,9 @@ def main(): #Main function to run the menu-based application.
             update_information()
         elif choice == 0:
             print("Exiting application. Goodbye!")
-            break # Exit the main application loop
+            break
         else:
             print("Invalid choice. Please try again.")
 
-# This ensures that the 'main()' function is called only when the script is executed directly,
 if __name__ == "__main__":
     main()
