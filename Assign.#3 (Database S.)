@@ -40,8 +40,6 @@ tutor_expertise_db = [
 ]
 
 # 6. Availability Table: Stores tutor availability slots.
-# AvailabilityStartTime and AvailabilityEndTime are simplified to time strings.
-# AvailabilityDate is now a separate field as per the description table.
 availability_db = [
     {"AvailabilityID": 7821, "TutorID": 3892, "AvailabilityStartTime": "09:00 am", "AvailabilityEndTime": "02:00 pm", "AvailabilityDate": "2025-07-17", "AvailabilityStatus": "Available"},
     {"AvailabilityID": 7672, "TutorID": 3741, "AvailabilityStartTime": "01:00 am", "AvailabilityEndTime": "05:00 pm", "AvailabilityDate": "2025-07-17", "AvailabilityStatus": "Not Available"},
@@ -49,7 +47,6 @@ availability_db = [
 ]
 
 # 7. Sessions Table: Stores details about scheduled one-on-one sessions.
-# SessionDateTime is split into SessionTime and SessionDate as per the description table.
 sessions_db = [
     {"SessionID": 728, "TutorID": 3892, "StudentUniversityID": 3453, "SubcategoryID": 2781, "SessionType": "In-Person", "SessionStatus": "Confirmed", "SessionLocation": "Library", "SessionTime": "10:00 am", "SessionDate": "2025-07-16"},
     {"SessionID": 892, "TutorID": 3741, "StudentUniversityID": 3105, "SubcategoryID": 2900, "SessionType": "Online", "SessionStatus": "Confirmed", "SessionLocation": "ZoomOnline", "SessionTime": "09:00 am", "SessionDate": "2025-07-12"},
@@ -58,9 +55,9 @@ sessions_db = [
 
 # 8. Rating Table: Stores student ratings and reviews for sessions.
 ratings_db = [
-    {"RatingID": 5137, "SessionID": 728, "Rating": 2.0, "StudentComment": "The course was advanced, and I wish there were more fun activities.", "ReviewDate": "2025-06-05"},
-    {"RatingID": 5681, "SessionID": 892, "Rating": 5.0, "StudentComment": "The course was exciting, and I enjoyed learning new things.", "ReviewDate": "2025-06-02"},
-    {"RatingID": 6092, "SessionID": 116, "Rating": 3.5, "StudentComment": "The course was challenging, but there were fun assignments to complete.", "ReviewDate": "2025-07-02"}
+    {"RatingID": 5137, "SessionID": 728, "StudentUniversityID": 3453, "Rating": 2.0, "StudentComment": "The course was advanced, and I wish there were more fun activities.", "ReviewDate": "2025-06-05"},
+    {"RatingID": 5681, "SessionID": 892, "StudentUniversityID": 3105, "Rating": 5.0, "StudentComment": "The course was exciting, and I enjoyed learning new things.", "ReviewDate": "2025-06-02"},
+    {"RatingID": 6092, "SessionID": 116, "StudentUniversityID": 3022, "Rating": 3.5, "StudentComment": "The course was challenging, but there were fun assignments to complete.", "ReviewDate": "2025-07-02"}
 ]
 
 # 9. Admin Table: Stores information about administrative users.
@@ -253,21 +250,19 @@ def add_rating_info(): #Allows the user to add new rating information for a sess
     display_table(sessions_db, "Existing Sessions") # Show existing sessions to help user
     session_id = get_valid_input("Enter Session ID for this rating (required): ", type_func=int, validation_func=lambda x: find_record_by_id(sessions_db, "SessionID", x) is not None, error_message="Session ID not found. Please enter an existing Session ID.")
     
-    # Based on the new Rating table description ("Third and Second Normal Form"),
-    # StudentUniversityID and TutorID are NOT direct fields in the Rating table.
-    # We retrieve them from the session for informational purposes, but don't store them in ratings_db.
+    # Retrieve StudentUniversityID from the session record
     session_record = find_record_by_id(sessions_db, "SessionID", session_id)
     if session_record: # Check if session_record was found
-        tutor_id = session_record["TutorID"]
-        student_id = session_record["StudentUniversityID"]
-        print(f"Rating will be associated with Tutor ID: {tutor_id}, Student ID: {student_id} (from Session ID: {session_id})")
+        student_id_from_session = session_record["StudentUniversityID"]
+        # tutor_id_from_session = session_record["TutorID"] # Removed as per corrected schema
+        print(f"Associated Student ID (from session): {student_id_from_session}")
     else:
-        # This case should ideally be caught by the validation_func for session_id,
-        # but as a fallback for clarity.
-        print(f"Could not retrieve tutor/student IDs for Session ID: {session_id}.")
-        return # Exit if session not found, although validation should prevent this.
+        print(f"Error: Session with ID {session_id} not found. Cannot add rating.")
+        return # Exit if session not found.
 
-
+    # Use the StudentUniversityID retrieved from the session for the rating record directly
+    student_id_for_rating = student_id_from_session
+    
     # Prompt for rating value, enforcing float type and range (0.0-5.0)
     rating_value = get_valid_input("Enter Rating (0.0 to 5.0, required): ", type_func=float, validation_func=lambda x: 0.0 <= x <= 5.0, error_message="Rating must be a number between 0.0 and 5.0.")
     
@@ -282,7 +277,8 @@ def add_rating_info(): #Allows the user to add new rating information for a sess
     new_rating = {
         "RatingID": new_rating_id,
         "SessionID": session_id,
-        # StudentUniversityID and TutorID are explicitly removed as direct fields based on the new description
+        "StudentUniversityID": student_id_for_rating, # Include StudentUniversityID as per description table
+        # "TutorID": tutor_id_for_rating, # Removed TutorID
         "Rating": rating_value,
         "StudentComment": student_comment,
         "ReviewDate": review_date
@@ -500,6 +496,33 @@ def update_rating_info(): #Updates an existing rating's information.
     if rating_record:
         print(f"Updating Rating ID: {rating_id}")
         print("Enter new values (leave blank to keep current value):")
+
+        # Helper function specifically for updating Foreign Keys.
+        def get_fk_update(prompt, current_fk, db_list, id_key, error_msg):
+            while True:
+                user_input = input(prompt).strip()
+                if not user_input: # If user leaves blank, return current FK value
+                    return current_fk
+                try:
+                    new_fk = int(user_input) # Try to convert to int
+                    if find_record_by_id(db_list, id_key, new_fk) is not None:
+                        return new_fk # Return new FK if found in referenced table
+                    else:
+                        print(error_msg) # Print error if FK not found
+                except ValueError:
+                    print("Invalid input. Please enter a number or leave blank.") # Error for non-numeric input
+
+        # Update StudentUniversityID (FK)
+        rating_record["StudentUniversityID"] = get_fk_update(
+            f"  Student University ID (current: {rating_record['StudentUniversityID']}): ", 
+            rating_record["StudentUniversityID"], 
+            students_db, 
+            "StudentUniversityID", 
+            "Student ID not found. Please enter an existing Student ID."
+        )
+
+        # Removed TutorID update as it's not a direct FK in Rating table per your description table.
+        # If TutorID needs to be changed, it would be done via the Session table.
 
         # Handle 'Rating' field: allow float input and validate range
         new_rating_value_str = input(f"  Rating (0.0 to 5.0, current: {rating_record['Rating']}): ").strip()
